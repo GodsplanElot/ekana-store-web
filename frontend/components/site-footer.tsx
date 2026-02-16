@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 
 export function SiteFooter() {
   return (
@@ -7,11 +7,15 @@ export function SiteFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link href="/" className="font-serif text-xl tracking-tight text-card-foreground">
-              ROSETTE
+            <Link
+              href="/"
+              className="font-serif text-xl tracking-tight text-card-foreground"
+            >
+              Ekana's Cosmetic
             </Link>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              Clean, cruelty-free beauty crafted for every skin tone. Because you deserve the best.
+              Clean, cruelty-free beauty crafted for every skin tone. Because
+              you deserve the best.
             </p>
           </div>
 
@@ -74,7 +78,9 @@ export function SiteFooter() {
                 <span className="text-sm text-muted-foreground">Our Story</span>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">Clean Beauty Pledge</span>
+                <span className="text-sm text-muted-foreground">
+                  Clean Beauty Pledge
+                </span>
               </li>
               <li>
                 <span className="text-sm text-muted-foreground">Careers</span>
@@ -95,13 +101,17 @@ export function SiteFooter() {
                 <span className="text-sm text-muted-foreground">Contact</span>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">Shipping & Returns</span>
+                <span className="text-sm text-muted-foreground">
+                  Shipping & Returns
+                </span>
               </li>
               <li>
                 <span className="text-sm text-muted-foreground">FAQ</span>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">Shade Finder</span>
+                <span className="text-sm text-muted-foreground">
+                  Shade Finder
+                </span>
               </li>
             </ul>
           </div>
@@ -109,14 +119,18 @@ export function SiteFooter() {
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            2026 ROSETTE Beauty. All rights reserved.
+            2026 Ekana's Cosmetic. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <span className="text-xs text-muted-foreground">Privacy Policy</span>
-            <span className="text-xs text-muted-foreground">Terms of Service</span>
+            <span className="text-xs text-muted-foreground">
+              Privacy Policy
+            </span>
+            <span className="text-xs text-muted-foreground">
+              Terms of Service
+            </span>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }

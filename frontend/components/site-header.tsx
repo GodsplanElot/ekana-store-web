@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { ShoppingBag, Menu, Search, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useCart } from "@/lib/cart-context"
-import { useState } from "react"
+import Link from "next/link";
+import { ShoppingBag, Menu, Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/lib/cart-context";
+import { useState } from "react";
 
 export function SiteHeader() {
-  const { totalItems, setIsCartOpen } = useCart()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { totalItems, setIsCartOpen } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
@@ -30,7 +30,10 @@ export function SiteHeader() {
           </Button>
 
           {/* Navigation - Desktop */}
-          <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+          <nav
+            className="hidden lg:flex items-center gap-8"
+            aria-label="Main navigation"
+          >
             <Link
               href="/"
               className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors"
@@ -64,8 +67,11 @@ export function SiteHeader() {
           </nav>
 
           {/* Logo */}
-          <Link href="/" className="font-serif text-2xl tracking-tight text-foreground">
-            ROSETTE
+          <Link
+            href="/"
+            className="font-serif text-2xl tracking-tight text-foreground"
+          >
+            Ekana's Cosmetic
           </Link>
 
           {/* Actions */}
@@ -92,7 +98,10 @@ export function SiteHeader() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <nav className="lg:hidden border-t border-border py-4" aria-label="Mobile navigation">
+          <nav
+            className="lg:hidden border-t border-border py-4"
+            aria-label="Mobile navigation"
+          >
             <div className="flex flex-col gap-3">
               <Link
                 href="/"
@@ -141,5 +150,5 @@ export function SiteHeader() {
         )}
       </div>
     </header>
-  )
+  );
 }

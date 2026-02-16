@@ -1,35 +1,37 @@
-import { notFound } from "next/navigation"
-import { Providers } from "@/components/providers"
-import { ProductDetail } from "@/components/product-detail"
-import { getProduct, products } from "@/lib/products"
-import type { Metadata } from "next"
+import { notFound } from "next/navigation";
+import { Providers } from "@/components/providers";
+import { ProductDetail } from "@/components/product-detail";
+import { getProduct, products } from "@/lib/products";
+import type { Metadata } from "next";
 
 interface PageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params
-  const product = getProduct(id)
-  if (!product) return { title: "Product Not Found" }
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const product = getProduct(id);
+  if (!product) return { title: "Product Not Found" };
   return {
-    title: `${product.name} - ROSETTE Beauty`,
+    title: `${product.name} - Ekana's Cosmetic`,
     description: product.description,
-  }
+  };
 }
 
 export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }))
+  return products.map((p) => ({ id: p.id }));
 }
 
 export default async function ProductPage({ params }: PageProps) {
-  const { id } = await params
-  const product = getProduct(id)
-  if (!product) notFound()
+  const { id } = await params;
+  const product = getProduct(id);
+  if (!product) notFound();
 
   return (
     <Providers>
       <ProductDetail product={product} />
     </Providers>
-  )
+  );
 }
