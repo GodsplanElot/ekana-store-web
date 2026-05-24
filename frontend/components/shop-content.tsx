@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { products, categories } from "@/lib/products"
 import { ProductCard } from "@/components/product-card"
@@ -10,13 +10,8 @@ import { cn } from "@/lib/utils"
 export function ShopContent() {
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get("category")
-  const [activeCategory, setActiveCategory] = useState(categoryParam || "All")
-
-  useEffect(() => {
-    if (categoryParam) {
-      setActiveCategory(categoryParam)
-    }
-  }, [categoryParam])
+  const activeCategory =
+    categoryParam && categories.includes(categoryParam) ? categoryParam : "All"
 
   const filteredProducts =
     activeCategory === "All"
@@ -41,6 +36,7 @@ export function ShopContent() {
           {categories.map((category) => (
             <Button
               key={category}
+              asChild
               variant={activeCategory === category ? "default" : "outline"}
               size="sm"
               className={cn(
@@ -48,11 +44,12 @@ export function ShopContent() {
                 activeCategory === category &&
                   "bg-primary text-primary-foreground"
               )}
-              onClick={() => setActiveCategory(category)}
               role="tab"
               aria-selected={activeCategory === category}
             >
-              {category}
+              <Link href={category === "All" ? "/shop" : `/shop?category=${category}`}>
+                {category}
+              </Link>
             </Button>
           ))}
         </div>

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Providers } from "@/components/providers";
 import { ShopContent } from "@/components/shop-content";
 
@@ -10,7 +11,9 @@ export const metadata = {
 export default function ShopPage() {
   return (
     <Providers>
-      <ShopContent />
+      <Suspense fallback={null}>
+        <ShopContent />
+      </Suspense>
     </Providers>
   );
 }

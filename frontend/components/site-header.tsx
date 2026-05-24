@@ -71,7 +71,7 @@ export function SiteHeader() {
             href="/"
             className="font-serif text-2xl tracking-tight text-foreground"
           >
-            Ekana's Cosmetic
+            Ekana&apos;s Cosmetic
           </Link>
 
           {/* Actions */}

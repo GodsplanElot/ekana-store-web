@@ -11,7 +11,7 @@ export function SiteFooter() {
               href="/"
               className="font-serif text-xl tracking-tight text-card-foreground"
             >
-              Ekana's Cosmetic
+              Ekana&apos;s Cosmetic
             </Link>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
               Clean, cruelty-free beauty crafted for every skin tone. Because
@@ -119,7 +119,7 @@ export function SiteFooter() {
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            2026 Ekana's Cosmetic. All rights reserved.
+            2026 Ekana&apos;s Cosmetic. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <span className="text-xs text-muted-foreground">
