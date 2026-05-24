@@ -80,6 +80,13 @@ export function CheckoutContent() {
           Checkout
         </h1>
 
+        <div className="mb-8 rounded-lg border border-primary/25 bg-primary/10 px-4 py-3">
+          <p className="text-sm font-medium text-foreground">Demo checkout</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            This form does not process real payments or create live orders.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
           {/* Form */}
           <div className="lg:col-span-3">
@@ -104,6 +111,7 @@ export function CheckoutContent() {
                     <Input
                       id="email"
                       type="email"
+                      autoComplete="email"
                       placeholder="you@example.com"
                       required
                       className="mt-1.5"
@@ -124,31 +132,31 @@ export function CheckoutContent() {
                     <Label htmlFor="firstName" className="text-xs text-muted-foreground uppercase tracking-wide">
                       First Name
                     </Label>
-                    <Input id="firstName" placeholder="Jane" required className="mt-1.5" />
+                    <Input id="firstName" autoComplete="given-name" placeholder="Jane" required className="mt-1.5" />
                   </div>
                   <div>
                     <Label htmlFor="lastName" className="text-xs text-muted-foreground uppercase tracking-wide">
                       Last Name
                     </Label>
-                    <Input id="lastName" placeholder="Doe" required className="mt-1.5" />
+                    <Input id="lastName" autoComplete="family-name" placeholder="Doe" required className="mt-1.5" />
                   </div>
                   <div className="sm:col-span-2">
                     <Label htmlFor="address" className="text-xs text-muted-foreground uppercase tracking-wide">
                       Address
                     </Label>
-                    <Input id="address" placeholder="123 Main St" required className="mt-1.5" />
+                    <Input id="address" autoComplete="street-address" placeholder="123 Main St" required className="mt-1.5" />
                   </div>
                   <div>
                     <Label htmlFor="city" className="text-xs text-muted-foreground uppercase tracking-wide">
                       City
                     </Label>
-                    <Input id="city" placeholder="New York" required className="mt-1.5" />
+                    <Input id="city" autoComplete="address-level2" placeholder="New York" required className="mt-1.5" />
                   </div>
                   <div>
                     <Label htmlFor="zip" className="text-xs text-muted-foreground uppercase tracking-wide">
                       ZIP Code
                     </Label>
-                    <Input id="zip" placeholder="10001" required className="mt-1.5" />
+                    <Input id="zip" autoComplete="postal-code" inputMode="numeric" placeholder="10001" required className="mt-1.5" />
                   </div>
                 </div>
               </div>
@@ -165,20 +173,20 @@ export function CheckoutContent() {
                     <Label htmlFor="card" className="text-xs text-muted-foreground uppercase tracking-wide">
                       Card Number
                     </Label>
-                    <Input id="card" placeholder="4242 4242 4242 4242" required className="mt-1.5" />
+                    <Input id="card" autoComplete="off" inputMode="numeric" placeholder="Demo card number" required className="mt-1.5" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="expiry" className="text-xs text-muted-foreground uppercase tracking-wide">
                         Expiry
                       </Label>
-                      <Input id="expiry" placeholder="MM / YY" required className="mt-1.5" />
+                      <Input id="expiry" autoComplete="off" inputMode="numeric" placeholder="MM / YY" required className="mt-1.5" />
                     </div>
                     <div>
                       <Label htmlFor="cvc" className="text-xs text-muted-foreground uppercase tracking-wide">
                         CVC
                       </Label>
-                      <Input id="cvc" placeholder="123" required className="mt-1.5" />
+                      <Input id="cvc" autoComplete="off" inputMode="numeric" placeholder="CVC" required className="mt-1.5" />
                     </div>
                   </div>
                 </div>
@@ -189,7 +197,7 @@ export function CheckoutContent() {
                 size="lg"
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                Place Order &middot; ${total.toFixed(2)}
+                Place Demo Order &middot; ${total.toFixed(2)}
               </Button>
             </form>
           </div>
