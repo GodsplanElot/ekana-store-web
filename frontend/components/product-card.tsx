@@ -63,7 +63,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <Button
           variant="outline"
           size="sm"
-          className="mt-3 w-full opacity-0 group-hover:opacity-100 transition-opacity"
+          className="mt-3 w-full opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
           onClick={() => addItem(product)}
           aria-label={`Add ${product.name} to cart`}
         >
