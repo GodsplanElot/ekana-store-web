@@ -11,11 +11,11 @@ export function SiteFooter() {
               href="/"
               className="font-serif text-xl tracking-tight text-card-foreground"
             >
-              Ekana&apos;s Cosmetic
+              Ekana Cosmetics
             </Link>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              Clean, cruelty-free beauty crafted for every skin tone. Because
-              you deserve the best.
+              Glosses, liners, and lashes made to feel luxurious, effortless,
+              and authentic.
             </p>
           </div>
 
@@ -35,34 +35,34 @@ export function SiteFooter() {
               </li>
               <li>
                 <Link
-                  href="/shop?category=Face"
+                  href="/shop?category=Glosses"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Face
+                  Glosses
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/shop?category=Eyes"
+                  href="/shop?category=Lip%20Liners"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Eyes
+                  Lip Liners
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/shop?category=Lips"
+                  href="/shop?category=Lashes"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Lips
+                  Lashes
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/shop?category=Skincare"
+                  href="/shop?category=Lash%20Trays"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Skincare
+                  Lash Trays
                 </Link>
               </li>
             </ul>
@@ -75,18 +75,16 @@ export function SiteFooter() {
             </h3>
             <ul className="flex flex-col gap-2.5">
               <li>
-                <span className="text-sm text-muted-foreground">Our Story</span>
+                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">
-                  Clean Beauty Pledge
-                </span>
+                <Link href="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</Link>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">Careers</span>
+                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">Press</span>
+                <span className="text-sm text-muted-foreground">Instagram</span>
               </li>
             </ul>
           </div>
@@ -98,20 +96,16 @@ export function SiteFooter() {
             </h3>
             <ul className="flex flex-col gap-2.5">
               <li>
-                <span className="text-sm text-muted-foreground">Contact</span>
+                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">
-                  Shipping & Returns
-                </span>
+                <Link href="/shipping-returns" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Shipping & Returns</Link>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">FAQ</span>
+                <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">
-                  Shade Finder
-                </span>
+                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms</Link>
               </li>
             </ul>
           </div>
@@ -119,15 +113,15 @@ export function SiteFooter() {
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            2026 Ekana&apos;s Cosmetic. All rights reserved.
+            2026 Ekana Cosmetics. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <span className="text-xs text-muted-foreground">
+            <Link href="/privacy-policy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
               Privacy Policy
-            </span>
-            <span className="text-xs text-muted-foreground">
+            </Link>
+            <Link href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
               Terms of Service
-            </span>
+            </Link>
           </div>
         </div>
       </div>
