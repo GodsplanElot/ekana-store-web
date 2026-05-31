@@ -1,6 +1,6 @@
 # Ekana Store Web
 
-Next.js storefront prototype for Ekana's Cosmetic. The app includes a static product catalog, product detail pages, a localStorage-backed cart, a cart drawer, and a clearly marked demo checkout flow.
+Next.js storefront for Ekana Cosmetics. The app includes a mobile-first product catalog, product detail pages, localStorage cart persistence, cart drawer, newsletter signup, checkout order capture, Paystack payment initialization, and Supabase-backed admin/order APIs.
 
 ## Stack
 
@@ -8,6 +8,10 @@ Next.js storefront prototype for Ekana's Cosmetic. The app includes a static pro
 - React 19
 - Tailwind CSS
 - shadcn/Radix UI components
+- Supabase for Postgres/Auth-backed backend data
+- Paystack for payments
+- Resend for email notifications
+- Cloudinary-ready image storage configuration
 - pnpm
 
 ## Getting Started
@@ -36,4 +40,6 @@ pnpm start
 
 ## Current Scope
 
-This is a frontend prototype. Product data lives in `lib/products.ts`, cart state is stored in the browser, and checkout does not process real payments or create live orders.
+The app runs without service credentials by using the seed catalog in `lib/products.ts`. When environment variables are configured, API routes persist newsletter signups and orders to Supabase, initialize Paystack payments, and send order emails through Resend.
+
+Copy `.env.example` to `.env.local` and fill the relevant keys before enabling live backend behavior. Apply `db/migrations/0001_initial_backend.sql` to Supabase before using the backend tables.
