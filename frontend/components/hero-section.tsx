@@ -11,13 +11,13 @@ export function HeroSection() {
           {/* Text content */}
           <div className="flex flex-col gap-6 lg:pr-16">
             <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
-              New Collection
+              Ekana Cosmetics
             </p>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-[1.1] text-balance">
-              Beauty that celebrates you
+              Making beauty feel as good as it looks
             </h1>
             <p className="text-base text-muted-foreground leading-relaxed max-w-md">
-              Discover clean, cruelty-free makeup crafted for every skin tone. Premium formulas that let your natural beauty shine through.
+              Refined glosses, liners, and lashes designed for luxurious wear, soft confidence, and effortless mobile shopping.
             </p>
             <div className="flex items-center gap-4 mt-2">
               <Button
@@ -31,7 +31,7 @@ export function HeroSection() {
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link href="/shop?category=Lips">Best Sellers</Link>
+                <Link href="/shop?category=Glosses">Shop Glosses</Link>
               </Button>
             </div>
           </div>
@@ -40,7 +40,7 @@ export function HeroSection() {
           <div className="relative aspect-[4/3] lg:aspect-square overflow-hidden rounded-xl">
             <Image
               src="/images/hero.jpg"
-              alt="Luxury beauty products including lipsticks, eyeshadow palette, and brushes arranged on pink silk"
+              alt="Ekana Cosmetics glosses, liners, and beauty products arranged on pink silk"
               fill
               className="object-cover"
               priority

@@ -15,7 +15,7 @@ export async function generateMetadata({
   const product = getProduct(id);
   if (!product) return { title: "Product Not Found" };
   return {
-    title: `${product.name} - Ekana's Cosmetic`,
+    title: `${product.name} - Ekana Cosmetics`,
     description: product.description,
   };
 }

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useCart } from "@/lib/cart-context"
 import type { Product } from "@/lib/products"
+import { formatNaira } from "@/lib/money"
 
 interface ProductCardProps {
   product: Product
@@ -51,13 +52,8 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
           <div className="text-right flex-shrink-0">
             <span className="text-sm font-semibold text-foreground">
-              ${product.price}
+              {formatNaira(product.price)}
             </span>
-            {product.originalPrice && (
-              <span className="text-xs text-muted-foreground line-through ml-1.5">
-                ${product.originalPrice}
-              </span>
-            )}
           </div>
         </div>
         <Button

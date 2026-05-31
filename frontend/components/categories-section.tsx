@@ -3,21 +3,21 @@ import Link from "next/link"
 
 const categoryData = [
   {
-    name: "Face",
-    slug: "Face",
-    image: "/images/product-3.jpg",
-    count: 2,
+    name: "Glosses",
+    slug: "Glosses",
+    image: "/images/product-7.jpg",
+    count: 5,
   },
   {
-    name: "Eyes",
-    slug: "Eyes",
-    image: "/images/product-2.jpg",
-    count: 2,
+    name: "Lip Liners",
+    slug: "Lip Liners",
+    image: "/images/product-5.jpg",
+    count: 3,
   },
   {
-    name: "Lips",
-    slug: "Lips",
-    image: "/images/product-1.jpg",
+    name: "Lashes",
+    slug: "Lashes",
+    image: "/images/product-8.jpg",
     count: 2,
   },
 ]
@@ -39,7 +39,7 @@ export function CategoriesSection() {
           {categoryData.map((category) => (
             <Link
               key={category.slug}
-              href={`/shop?category=${category.slug}`}
+              href={`/shop?category=${encodeURIComponent(category.slug)}`}
               className="group relative aspect-[4/3] overflow-hidden rounded-xl"
             >
               <Image

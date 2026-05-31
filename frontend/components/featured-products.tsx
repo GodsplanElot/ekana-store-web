@@ -2,11 +2,11 @@
 
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { products } from "@/lib/products"
+import { getRestockedProducts } from "@/lib/products"
 import { ProductCard } from "@/components/product-card"
 
 export function FeaturedProducts() {
-  const featured = products.slice(0, 4)
+  const featured = getRestockedProducts()
 
   return (
     <section className="py-16 lg:py-24">
@@ -17,7 +17,7 @@ export function FeaturedProducts() {
               Featured
             </p>
             <h2 className="font-serif text-3xl md:text-4xl text-foreground">
-              Most Loved
+              New & Restocked
             </h2>
           </div>
           <Link

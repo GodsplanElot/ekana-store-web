@@ -3,9 +3,9 @@ import { Providers } from "@/components/providers";
 import { ShopContent } from "@/components/shop-content";
 
 export const metadata = {
-  title: "Shop All - Ekana's Cosmetic",
+  title: "Shop All - Ekana Cosmetics",
   description:
-    "Browse our full collection of luxury makeup and beauty products.",
+    "Browse Ekana Cosmetics glosses, lip liners, mink lash pairs, and lash trays.",
 };
 
 export default function ShopPage() {

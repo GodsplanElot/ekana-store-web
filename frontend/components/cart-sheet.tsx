@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/lib/cart-context"
+import { formatNaira } from "@/lib/money"
 
 export function CartSheet() {
   const {
@@ -69,7 +70,7 @@ export function CartSheet() {
                           {item.product.name}
                         </h3>
                         <p className="text-sm text-muted-foreground mt-0.5">
-                          ${item.product.price}
+                          {formatNaira(item.product.price)}
                         </p>
                       </div>
                       <div className="flex items-center justify-between">
@@ -127,7 +128,7 @@ export function CartSheet() {
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-foreground">Subtotal</span>
                 <span className="text-lg font-semibold text-foreground">
-                  ${totalPrice.toFixed(2)}
+                  {formatNaira(totalPrice)}
                 </span>
               </div>
               <p className="text-xs text-muted-foreground mb-4">

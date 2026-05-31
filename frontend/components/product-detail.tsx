@@ -10,6 +10,7 @@ import { useCart } from "@/lib/cart-context"
 import { products, type Product } from "@/lib/products"
 import { ProductCard } from "@/components/product-card"
 import { useState } from "react"
+import { formatNaira } from "@/lib/money"
 
 interface ProductDetailProps {
   product: Product
@@ -30,7 +31,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
   }
 
   return (
-    <div className="py-6 lg:py-12">
+    <div className="py-6 pb-24 md:pb-6 lg:py-12">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-8" aria-label="Breadcrumb">
@@ -43,7 +44,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <Link
-            href={`/shop?category=${product.category}`}
+            href={`/shop?category=${encodeURIComponent(product.category)}`}
             className="hover:text-foreground transition-colors"
           >
             {product.category}
@@ -105,13 +106,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
             {/* Price */}
             <div className="flex items-baseline gap-3 mb-6">
               <span className="text-2xl font-semibold text-foreground">
-                ${product.price}
+                {formatNaira(product.price)}
               </span>
-              {product.originalPrice && (
-                <span className="text-lg text-muted-foreground line-through">
-                  ${product.originalPrice}
-                </span>
-              )}
             </div>
 
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">
@@ -181,21 +177,21 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 <Truck className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 <div>
                   <p className="text-xs font-medium text-foreground">Free Shipping</p>
-                  <p className="text-xs text-muted-foreground">On orders over $100</p>
+                  <p className="text-xs text-muted-foreground">Delivery in major cities</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <RotateCcw className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 <div>
                   <p className="text-xs font-medium text-foreground">Easy Returns</p>
-                  <p className="text-xs text-muted-foreground">30-day return policy</p>
+                  <p className="text-xs text-muted-foreground">48-hour issue window</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Shield className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 <div>
-                  <p className="text-xs font-medium text-foreground">Warranty</p>
-                  <p className="text-xs text-muted-foreground">2-year guarantee</p>
+                  <p className="text-xs font-medium text-foreground">Patch Test</p>
+                  <p className="text-xs text-muted-foreground">Recommended before use</p>
                 </div>
               </div>
             </div>
@@ -215,6 +211,21 @@ export function ProductDetail({ product }: ProductDetailProps) {
             </div>
           </section>
         )}
+      </div>
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:hidden">
+        <div className="mx-auto flex max-w-md items-center gap-3">
+          <div className="flex-1">
+            <p className="text-xs text-muted-foreground">{product.name}</p>
+            <p className="font-semibold text-foreground">{formatNaira(product.price)}</p>
+          </div>
+          <Button
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={handleAddToCart}
+          >
+            <ShoppingBag className="mr-2 h-4 w-4" />
+            Add
+          </Button>
+        </div>
       </div>
     </div>
   )

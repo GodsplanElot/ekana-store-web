@@ -47,22 +47,22 @@ export function SiteHeader() {
               Shop
             </Link>
             <Link
-              href="/shop?category=Face"
+              href="/shop?category=Glosses"
               className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors"
             >
-              Face
+              Glosses
             </Link>
             <Link
-              href="/shop?category=Eyes"
+              href="/shop?category=Lip%20Liners"
               className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors"
             >
-              Eyes
+              Liners
             </Link>
             <Link
-              href="/shop?category=Lips"
+              href="/shop?category=Lashes"
               className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors"
             >
-              Lips
+              Lashes
             </Link>
           </nav>
 
@@ -71,7 +71,7 @@ export function SiteHeader() {
             href="/"
             className="font-serif text-2xl tracking-tight text-foreground"
           >
-            Ekana&apos;s Cosmetic
+            Ekana Cosmetics
           </Link>
 
           {/* Actions */}
@@ -118,32 +118,32 @@ export function SiteHeader() {
                 Shop All
               </Link>
               <Link
-                href="/shop?category=Face"
+                href="/shop?category=Glosses"
                 className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Face
+                Glosses
               </Link>
               <Link
-                href="/shop?category=Eyes"
+                href="/shop?category=Lip%20Liners"
                 className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Eyes
+                Lip Liners
               </Link>
               <Link
-                href="/shop?category=Lips"
+                href="/shop?category=Lashes"
                 className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Lips
+                Lashes
               </Link>
               <Link
-                href="/shop?category=Skincare"
+                href="/shop?category=Lash%20Trays"
                 className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Skincare
+                Lash Trays
               </Link>
             </div>
           </nav>

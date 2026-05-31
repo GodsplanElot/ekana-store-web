@@ -3,9 +3,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ekana's Cosmetic - Premium Beauty & Makeup",
+  title: "Ekana Cosmetics - Mobile Beauty Store",
   description:
-    "Discover luxury makeup and beauty essentials. Cruelty-free, clean beauty crafted for every skin tone.",
+    "Shop glosses, lip liners, and lashes from Ekana Cosmetics. Making beauty feel as good as it looks.",
 };
 
 export const viewport: Viewport = {

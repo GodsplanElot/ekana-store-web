@@ -1,171 +1,226 @@
+export type ProductCategory = "Glosses" | "Lip Liners" | "Lashes" | "Lash Trays"
+
 export interface Product {
   id: string
+  slug: string
   name: string
   description: string
   price: number
-  originalPrice?: number
   image: string
-  category: string
+  category: ProductCategory
   badge?: string
+  shade?: string
   rating: number
   reviews: number
   details: string[]
   inStock: boolean
+  inventoryCount: number
+  isFeatured: boolean
+  isRestocked: boolean
+  active: boolean
 }
 
 export const products: Product[] = [
   {
-    id: "velvet-matte-lipstick",
-    name: "Velvet Matte Lipstick",
-    description: "A richly pigmented matte lipstick in a universally flattering berry-rose shade. Creamy formula glides on effortlessly and lasts up to 12 hours without drying.",
-    price: 32,
-    originalPrice: 42,
+    id: "red-theory",
+    slug: "red-theory",
+    name: "Red Theory",
+    description: "A rich, confident red gloss with a high-shine finish and smooth non-sticky wear.",
+    price: 4800,
     image: "/images/product-1.jpg",
-    category: "Lips",
-    badge: "Sale",
-    rating: 4.8,
-    reviews: 1024,
-    details: [
-      "Long-wear matte finish, up to 12 hours",
-      "Enriched with vitamin E and shea butter",
-      "Cruelty-free and vegan",
-      "Net weight: 3.5g",
-    ],
-    inStock: true,
-  },
-  {
-    id: "rose-petal-palette",
-    name: "Rose Petal Eye Palette",
-    description: "A curated 12-shade eyeshadow palette featuring mauves, rose golds, and champagne tones. Buttery soft formula with intense pigment payoff.",
-    price: 58,
-    image: "/images/product-2.jpg",
-    category: "Eyes",
-    badge: "Bestseller",
+    category: "Glosses",
+    badge: "Restocked",
+    shade: "Rich red",
     rating: 4.9,
-    reviews: 2187,
-    details: [
-      "12 curated shades: mattes, shimmers, and metallics",
-      "Micro-fine powder for seamless blending",
-      "Large mirror included",
-      "Paraben-free formula",
-    ],
+    reviews: 42,
+    details: ["Non-sticky formula", "Smooth application", "High shine finish", "Patch test recommended"],
     inStock: true,
+    inventoryCount: 24,
+    isFeatured: true,
+    isRestocked: true,
+    active: true,
   },
   {
-    id: "luminous-silk-foundation",
-    name: "Luminous Silk Foundation",
-    description: "A buildable, lightweight liquid foundation that delivers a natural, luminous finish. Enriched with hyaluronic acid for all-day hydration.",
-    price: 48,
-    image: "/images/product-3.jpg",
-    category: "Face",
-    rating: 4.7,
-    reviews: 1456,
-    details: [
-      "Buildable light-to-medium coverage",
-      "30 inclusive shades available",
-      "SPF 15 protection",
-      "Oil-free, non-comedogenic",
-    ],
-    inStock: true,
-  },
-  {
-    id: "petal-soft-blush",
-    name: "Petal Soft Powder Blush",
-    description: "A silky powder blush in a warm coral-pink with a subtle luminous finish. Blends effortlessly for a fresh, natural flush of color.",
-    price: 34,
-    image: "/images/product-4.jpg",
-    category: "Face",
-    badge: "New",
-    rating: 4.6,
-    reviews: 678,
-    details: [
-      "Silky micro-fine powder formula",
-      "Buildable color payoff",
-      "Rose gold compact with mirror",
-      "Infused with rosehip extract",
-    ],
-    inStock: true,
-  },
-  {
-    id: "lash-drama-mascara",
-    name: "Lash Drama Volumizing Mascara",
-    description: "A volumizing and lengthening mascara that delivers dramatic, clump-free lashes. The hourglass-shaped brush coats every lash from root to tip.",
-    price: 28,
-    originalPrice: 36,
-    image: "/images/product-5.jpg",
-    category: "Eyes",
-    badge: "Sale",
-    rating: 4.8,
-    reviews: 3245,
-    details: [
-      "Volumizing and lengthening formula",
-      "Smudge-proof and flake-proof",
-      "Easy to remove with warm water",
-      "Ophthalmologist tested",
-    ],
-    inStock: true,
-  },
-  {
-    id: "glow-ritual-set",
-    name: "Glow Ritual Skincare Set",
-    description: "A three-piece skincare ritual featuring a vitamin C serum, hydrating moisturizer, and balancing toner. Everything you need for radiant, glass-like skin.",
-    price: 89,
-    image: "/images/product-6.jpg",
-    category: "Skincare",
-    rating: 4.9,
-    reviews: 892,
-    details: [
-      "Includes serum, moisturizer, and toner",
-      "Vitamin C and niacinamide enriched",
-      "Suitable for all skin types",
-      "Frosted glass packaging, recyclable",
-    ],
-    inStock: true,
-  },
-  {
-    id: "crystal-lip-gloss",
-    name: "Crystal Shine Lip Gloss",
-    description: "A high-shine, non-sticky lip gloss with light-reflecting micro-pearls. Delivers a glossy, plumped look with a hint of rosy shimmer.",
-    price: 24,
+    id: "luminous",
+    slug: "luminous",
+    name: "Luminous",
+    description: "A radiant clear gloss with a soft shimmer for effortless everyday shine.",
+    price: 4800,
     image: "/images/product-7.jpg",
-    category: "Lips",
+    category: "Glosses",
     badge: "New",
-    rating: 4.5,
-    reviews: 567,
-    details: [
-      "High-shine, non-sticky formula",
-      "Light-reflecting micro-pearls",
-      "Infused with hyaluronic acid for hydration",
-      "Doe-foot applicator for precise application",
-    ],
+    shade: "Clear shimmer",
+    rating: 4.8,
+    reviews: 37,
+    details: ["Non-sticky formula", "Smooth application", "High shine finish", "Patch test recommended"],
     inStock: true,
+    inventoryCount: 31,
+    isFeatured: true,
+    isRestocked: false,
+    active: true,
   },
   {
-    id: "pro-brush-collection",
-    name: "Pro Brush Collection",
-    description: "A luxurious 8-piece makeup brush set with ultra-soft synthetic bristles and rose gold handles. Includes brushes for face, eyes, and lips.",
-    price: 65,
-    image: "/images/product-8.jpg",
-    category: "Tools",
-    rating: 4.7,
-    reviews: 1123,
-    details: [
-      "8 essential brushes for face, eyes, and lips",
-      "Ultra-soft vegan synthetic bristles",
-      "Rose gold ferrules and pink handles",
-      "Includes faux leather travel pouch",
-    ],
+    id: "chestnut",
+    slug: "chestnut",
+    name: "Chestnut",
+    description: "A bold brown gloss with depth, warmth, and a polished reflective finish.",
+    price: 4800,
+    image: "/images/product-3.jpg",
+    category: "Glosses",
+    shade: "Bold brown",
+    rating: 4.8,
+    reviews: 29,
+    details: ["Non-sticky formula", "Smooth application", "High shine finish", "Patch test recommended"],
     inStock: true,
+    inventoryCount: 18,
+    isFeatured: false,
+    isRestocked: false,
+    active: true,
+  },
+  {
+    id: "rosette",
+    slug: "rosette",
+    name: "Rosette",
+    description: "A soft romantic pink gloss made for a refined, feminine finish.",
+    price: 4800,
+    image: "/images/product-4.jpg",
+    category: "Glosses",
+    badge: "Bestseller",
+    shade: "Soft pink",
+    rating: 4.9,
+    reviews: 58,
+    details: ["Non-sticky formula", "Smooth application", "High shine finish", "Patch test recommended"],
+    inStock: true,
+    inventoryCount: 26,
+    isFeatured: true,
+    isRestocked: false,
+    active: true,
+  },
+  {
+    id: "tea",
+    slug: "tea",
+    name: "Tea",
+    description: "A refined true nude gloss for clean, understated polish.",
+    price: 4800,
+    image: "/images/hero.jpg",
+    category: "Glosses",
+    shade: "True nude",
+    rating: 4.7,
+    reviews: 24,
+    details: ["Non-sticky formula", "Smooth application", "High shine finish", "Patch test recommended"],
+    inStock: true,
+    inventoryCount: 21,
+    isFeatured: false,
+    isRestocked: true,
+    active: true,
+  },
+  {
+    id: "obsidian",
+    slug: "obsidian",
+    name: "Obsidian",
+    description: "A deep black liner for dramatic definition and sculpted lip looks.",
+    price: 3500,
+    image: "/images/product-5.jpg",
+    category: "Lip Liners",
+    shade: "Deep black",
+    rating: 4.7,
+    reviews: 18,
+    details: ["Creamy definition", "Pairs with glosses", "Precise shaping", "Patch test recommended"],
+    inStock: true,
+    inventoryCount: 17,
+    isFeatured: false,
+    isRestocked: false,
+    active: true,
+  },
+  {
+    id: "cocoa-contour",
+    slug: "cocoa-contour",
+    name: "Cocoa Contour",
+    description: "A rich brown sculpting liner for depth, balance, and polished definition.",
+    price: 3500,
+    image: "/images/product-2.jpg",
+    category: "Lip Liners",
+    badge: "Restocked",
+    shade: "Rich brown",
+    rating: 4.8,
+    reviews: 33,
+    details: ["Creamy definition", "Pairs with glosses", "Precise shaping", "Patch test recommended"],
+    inStock: true,
+    inventoryCount: 20,
+    isFeatured: true,
+    isRestocked: true,
+    active: true,
+  },
+  {
+    id: "heartline",
+    slug: "heartline",
+    name: "Heartline",
+    description: "A soft rosy liner for natural shaping and comfortable everyday definition.",
+    price: 3500,
+    image: "/images/product-1.jpg",
+    category: "Lip Liners",
+    shade: "Soft rose",
+    rating: 4.8,
+    reviews: 21,
+    details: ["Creamy definition", "Pairs with glosses", "Precise shaping", "Patch test recommended"],
+    inStock: true,
+    inventoryCount: 22,
+    isFeatured: false,
+    isRestocked: false,
+    active: true,
+  },
+  {
+    id: "mink-lash-pair",
+    slug: "mink-lash-pair",
+    name: "Mink Lash Pair",
+    description: "Lightweight reusable mink lashes designed for fullness, softness, and easy wear.",
+    price: 3000,
+    image: "/images/product-8.jpg",
+    category: "Lashes",
+    badge: "New",
+    rating: 4.9,
+    reviews: 46,
+    details: ["Lightweight feel", "Reusable with proper care", "Soft full finish", "Store in tray after use"],
+    inStock: true,
+    inventoryCount: 30,
+    isFeatured: true,
+    isRestocked: false,
+    active: true,
+  },
+  {
+    id: "mink-lash-tray",
+    slug: "mink-lash-tray",
+    name: "Mink Lash Tray",
+    description: "A reusable lash tray option for fuller lash styling and stock purchase.",
+    price: 14500,
+    image: "/images/product-6.jpg",
+    category: "Lash Trays",
+    rating: 4.8,
+    reviews: 12,
+    details: ["Tray format", "Reusable lash styling", "Ideal for stock purchase", "Store in a clean dry place"],
+    inStock: true,
+    inventoryCount: 9,
+    isFeatured: false,
+    isRestocked: true,
+    active: true,
   },
 ]
 
-export const categories = ["All", "Face", "Eyes", "Lips", "Skincare", "Tools"]
+export const categories = ["All", "Glosses", "Lip Liners", "Lashes", "Lash Trays"] as const
 
-export function getProduct(id: string): Product | undefined {
-  return products.find((p) => p.id === id)
+export function getProduct(idOrSlug: string): Product | undefined {
+  return products.find((p) => p.id === idOrSlug || p.slug === idOrSlug)
 }
 
 export function getProductsByCategory(category: string): Product[] {
   if (category === "All") return products
   return products.filter((p) => p.category === category)
+}
+
+export function getFeaturedProducts(): Product[] {
+  return products.filter((p) => p.isFeatured && p.active)
+}
+
+export function getRestockedProducts(): Product[] {
+  return products.filter((p) => p.isRestocked && p.active)
 }

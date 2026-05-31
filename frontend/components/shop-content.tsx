@@ -10,8 +10,9 @@ import { cn } from "@/lib/utils"
 export function ShopContent() {
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get("category")
+  const validCategory = categories.find((category) => category === categoryParam)
   const activeCategory =
-    categoryParam && categories.includes(categoryParam) ? categoryParam : "All"
+    validCategory ?? "All"
 
   const filteredProducts =
     activeCategory === "All"
@@ -47,7 +48,7 @@ export function ShopContent() {
               role="tab"
               aria-selected={activeCategory === category}
             >
-              <Link href={category === "All" ? "/shop" : `/shop?category=${category}`}>
+              <Link href={category === "All" ? "/shop" : `/shop?category=${encodeURIComponent(category)}`}>
                 {category}
               </Link>
             </Button>
