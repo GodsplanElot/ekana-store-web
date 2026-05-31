@@ -2,7 +2,7 @@ import { Providers } from "@/components/providers";
 import { CheckoutContent } from "@/components/checkout-content";
 
 export const metadata = {
-  title: "Checkout - Ekana's Cosmetic",
+  title: "Checkout - Ekana Cosmetics",
   description: "Complete your order.",
 };
 

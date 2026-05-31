@@ -1,0 +1,112 @@
+import { randomUUID } from "node:crypto"
+import { NextResponse } from "next/server"
+import { z } from "zod"
+import { formatNaira } from "@/lib/money"
+import { products } from "@/lib/products"
+import { sendOrderEmails } from "@/lib/server/email"
+import { initializePaystackPayment } from "@/lib/server/paystack"
+import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+
+const checkoutSchema = z.object({
+  customer: z.object({
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+    email: z.string().email(),
+    phone: z.string().min(5),
+    address: z.string().min(3),
+    city: z.string().min(2),
+    notes: z.string().optional(),
+  }),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1),
+        quantity: z.number().int().min(1).max(20),
+      })
+    )
+    .min(1),
+})
+
+export async function POST(request: Request) {
+  const parsed = checkoutSchema.safeParse(await request.json())
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid checkout details." }, { status: 400 })
+  }
+
+  const resolvedItems = parsed.data.items.map((item) => {
+    const product = products.find((p) => p.id === item.productId)
+    if (!product || !product.active || !product.inStock) return null
+    return {
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: item.quantity,
+      lineTotal: product.price * item.quantity,
+    }
+  })
+
+  if (resolvedItems.some((item) => item === null)) {
+    return NextResponse.json(
+      { error: "One or more cart items are unavailable." },
+      { status: 400 }
+    )
+  }
+
+  const items = resolvedItems.filter((item) => item !== null)
+  const subtotal = items.reduce((sum, item) => sum + item.lineTotal, 0)
+  const deliveryFee = subtotal >= 20000 ? 0 : 2500
+  const total = subtotal + deliveryFee
+  const reference = `ekana_${Date.now()}_${randomUUID().slice(0, 8)}`
+  const customerName = `${parsed.data.customer.firstName} ${parsed.data.customer.lastName}`
+  const origin = request.headers.get("origin") ?? process.env.NEXT_PUBLIC_APP_URL ?? ""
+  const callbackUrl = `${origin}/checkout?reference=${encodeURIComponent(reference)}`
+
+  const supabase = createSupabaseAdmin()
+  if (supabase) {
+    const { error } = await supabase.from("orders").insert({
+      reference,
+      customer_email: parsed.data.customer.email,
+      customer_name: customerName,
+      customer_phone: parsed.data.customer.phone,
+      delivery_address: parsed.data.customer.address,
+      delivery_city: parsed.data.customer.city,
+      order_notes: parsed.data.customer.notes,
+      subtotal,
+      delivery_fee: deliveryFee,
+      total,
+      payment_status: "pending",
+      fulfillment_status: "new",
+      paystack_reference: reference,
+      items,
+    })
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+  }
+
+  const payment = await initializePaystackPayment({
+    email: parsed.data.customer.email,
+    amount: total * 100,
+    reference,
+    callbackUrl,
+    metadata: {
+      customerName,
+      items,
+    },
+  })
+
+  await sendOrderEmails({
+    customerEmail: parsed.data.customer.email,
+    customerName,
+    reference,
+    total: formatNaira(total),
+  })
+
+  return NextResponse.json({
+    ok: true,
+    reference,
+    total,
+    payment,
+  })
+}

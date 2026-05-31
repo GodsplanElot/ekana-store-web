@@ -9,14 +9,16 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/lib/cart-context"
 import { useState } from "react"
+import { formatNaira } from "@/lib/money"
 
 export function CheckoutContent() {
   const { items, totalPrice, clearCart } = useCart()
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
-  const shipping = totalPrice >= 100 ? 0 : 12
-  const tax = totalPrice * 0.08
-  const total = totalPrice + shipping + tax
+  const shipping = totalPrice >= 20000 ? 0 : 2500
+  const total = totalPrice + shipping
 
   if (submitted) {
     return (
@@ -81,9 +83,9 @@ export function CheckoutContent() {
         </h1>
 
         <div className="mb-8 rounded-lg border border-primary/25 bg-primary/10 px-4 py-3">
-          <p className="text-sm font-medium text-foreground">Demo checkout</p>
+          <p className="text-sm font-medium text-foreground">Secure checkout</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            This form does not process real payments or create live orders.
+            Payments are completed through Paystack when payment credentials are configured.
           </p>
         </div>
 
@@ -93,8 +95,47 @@ export function CheckoutContent() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                clearCart()
-                setSubmitted(true)
+                setSubmitting(true)
+                setError("")
+
+                const formData = new FormData(e.currentTarget)
+                fetch("/api/checkout", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    customer: {
+                      firstName: formData.get("firstName"),
+                      lastName: formData.get("lastName"),
+                      email: formData.get("email"),
+                      phone: formData.get("phone"),
+                      address: formData.get("address"),
+                      city: formData.get("city"),
+                      notes: formData.get("notes"),
+                    },
+                    items: items.map((item) => ({
+                      productId: item.product.id,
+                      quantity: item.quantity,
+                    })),
+                  }),
+                })
+                  .then(async (response) => {
+                    const payload = await response.json()
+                    if (!response.ok) {
+                      throw new Error(payload.error ?? "Unable to place order.")
+                    }
+
+                    clearCart()
+                    if (payload.payment?.authorizationUrl) {
+                      window.location.href = payload.payment.authorizationUrl
+                      return
+                    }
+
+                    setSubmitted(true)
+                  })
+                  .catch((checkoutError: Error) => {
+                    setError(checkoutError.message)
+                  })
+                  .finally(() => setSubmitting(false))
               }}
               className="flex flex-col gap-8"
             >
@@ -110,9 +151,24 @@ export function CheckoutContent() {
                     </Label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       autoComplete="email"
                       placeholder="you@example.com"
+                      required
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone" className="text-xs text-muted-foreground uppercase tracking-wide">
+                      Phone
+                    </Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      placeholder="0800 000 0000"
                       required
                       className="mt-1.5"
                     />
@@ -132,31 +188,31 @@ export function CheckoutContent() {
                     <Label htmlFor="firstName" className="text-xs text-muted-foreground uppercase tracking-wide">
                       First Name
                     </Label>
-                    <Input id="firstName" autoComplete="given-name" placeholder="Jane" required className="mt-1.5" />
+                    <Input id="firstName" name="firstName" autoComplete="given-name" placeholder="Jane" required className="mt-1.5" />
                   </div>
                   <div>
                     <Label htmlFor="lastName" className="text-xs text-muted-foreground uppercase tracking-wide">
                       Last Name
                     </Label>
-                    <Input id="lastName" autoComplete="family-name" placeholder="Doe" required className="mt-1.5" />
+                    <Input id="lastName" name="lastName" autoComplete="family-name" placeholder="Doe" required className="mt-1.5" />
                   </div>
                   <div className="sm:col-span-2">
                     <Label htmlFor="address" className="text-xs text-muted-foreground uppercase tracking-wide">
                       Address
                     </Label>
-                    <Input id="address" autoComplete="street-address" placeholder="123 Main St" required className="mt-1.5" />
+                    <Input id="address" name="address" autoComplete="street-address" placeholder="Delivery address" required className="mt-1.5" />
                   </div>
                   <div>
                     <Label htmlFor="city" className="text-xs text-muted-foreground uppercase tracking-wide">
                       City
                     </Label>
-                    <Input id="city" autoComplete="address-level2" placeholder="New York" required className="mt-1.5" />
+                    <Input id="city" name="city" autoComplete="address-level2" placeholder="Lagos" required className="mt-1.5" />
                   </div>
                   <div>
-                    <Label htmlFor="zip" className="text-xs text-muted-foreground uppercase tracking-wide">
-                      ZIP Code
+                    <Label htmlFor="notes" className="text-xs text-muted-foreground uppercase tracking-wide">
+                      Notes
                     </Label>
-                    <Input id="zip" autoComplete="postal-code" inputMode="numeric" placeholder="10001" required className="mt-1.5" />
+                    <Input id="notes" name="notes" placeholder="Delivery note" className="mt-1.5" />
                   </div>
                 </div>
               </div>
@@ -173,20 +229,20 @@ export function CheckoutContent() {
                     <Label htmlFor="card" className="text-xs text-muted-foreground uppercase tracking-wide">
                       Card Number
                     </Label>
-                    <Input id="card" autoComplete="off" inputMode="numeric" placeholder="Demo card number" required className="mt-1.5" />
+                    <Input id="card" autoComplete="off" placeholder="Secure Paystack checkout after order submission" disabled className="mt-1.5" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="expiry" className="text-xs text-muted-foreground uppercase tracking-wide">
                         Expiry
                       </Label>
-                      <Input id="expiry" autoComplete="off" inputMode="numeric" placeholder="MM / YY" required className="mt-1.5" />
+                      <Input id="expiry" autoComplete="off" placeholder="Paystack" disabled className="mt-1.5" />
                     </div>
                     <div>
                       <Label htmlFor="cvc" className="text-xs text-muted-foreground uppercase tracking-wide">
                         CVC
                       </Label>
-                      <Input id="cvc" autoComplete="off" inputMode="numeric" placeholder="CVC" required className="mt-1.5" />
+                      <Input id="cvc" autoComplete="off" placeholder="Secure" disabled className="mt-1.5" />
                     </div>
                   </div>
                 </div>
@@ -196,9 +252,11 @@ export function CheckoutContent() {
                 type="submit"
                 size="lg"
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                disabled={submitting}
               >
-                Place Demo Order &middot; ${total.toFixed(2)}
+                {submitting ? "Preparing Checkout" : "Pay with Paystack"} &middot; {formatNaira(total)}
               </Button>
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </form>
           </div>
 
@@ -228,7 +286,7 @@ export function CheckoutContent() {
                         {item.product.name}
                       </p>
                       <p className="text-sm text-card-foreground">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        {formatNaira(item.product.price * item.quantity)}
                       </p>
                     </div>
                   </div>
@@ -240,20 +298,16 @@ export function CheckoutContent() {
               <div className="flex flex-col gap-2 text-sm">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>{formatNaira(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
-                </div>
-                <div className="flex justify-between text-muted-foreground">
-                  <span>Tax</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>{shipping === 0 ? "Free" : formatNaira(shipping)}</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between font-semibold text-card-foreground text-base">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{formatNaira(total)}</span>
                 </div>
               </div>
 
