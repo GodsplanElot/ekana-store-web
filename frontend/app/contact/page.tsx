@@ -29,6 +29,11 @@ export default function ContactPage() {
               Instagram
             </a>
           </Button>
+          <Button asChild size="lg" variant="outline" className="justify-start">
+            <a href="https://pinterest.com" rel="noreferrer" target="_blank">
+              Pinterest
+            </a>
+          </Button>
         </div>
       </InfoPage>
     </Providers>

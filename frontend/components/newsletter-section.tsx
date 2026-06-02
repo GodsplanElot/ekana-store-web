@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { trackNewsletterSignup } from "@/lib/analytics"
 
 export function NewsletterSection() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
@@ -43,6 +44,7 @@ export function NewsletterSection() {
               e.currentTarget.reset()
               setStatus("success")
               setMessage("You're on the list.")
+              trackNewsletterSignup("home")
             }}
           >
             <Input

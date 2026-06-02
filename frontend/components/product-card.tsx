@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { useCart } from "@/lib/cart-context"
 import type { Product } from "@/lib/products"
 import { formatNaira } from "@/lib/money"
+import { trackAddToCart } from "@/lib/analytics"
 
 interface ProductCardProps {
   product: Product
@@ -46,8 +47,8 @@ export function ProductCard({ product }: ProductCardProps) {
                 {product.name}
               </Link>
             </h3>
-            <p className="text-xs text-muted-foreground mt-1">
-              {product.category}
+            <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
+              {product.description}
             </p>
           </div>
           <div className="text-right flex-shrink-0">
@@ -60,7 +61,10 @@ export function ProductCard({ product }: ProductCardProps) {
           variant="outline"
           size="sm"
           className="mt-3 w-full opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
-          onClick={() => addItem(product)}
+          onClick={() => {
+            addItem(product)
+            trackAddToCart(product)
+          }}
           aria-label={`Add ${product.name} to cart`}
         >
           <ShoppingBag className="mr-2 h-4 w-4" />

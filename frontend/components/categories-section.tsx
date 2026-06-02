@@ -18,7 +18,13 @@ const categoryData = [
     name: "Lashes",
     slug: "Lashes",
     image: "/images/product-8.jpg",
-    count: 2,
+    count: 1,
+  },
+  {
+    name: "Lash Trays",
+    slug: "Lash Trays",
+    image: "/images/product-6.jpg",
+    count: 1,
   },
 ]
 
@@ -35,12 +41,12 @@ export function CategoriesSection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {categoryData.map((category) => (
             <Link
               key={category.slug}
               href={`/shop?category=${encodeURIComponent(category.slug)}`}
-              className="group relative aspect-[4/3] overflow-hidden rounded-xl"
+              className="group relative aspect-[4/3] overflow-hidden rounded-lg"
             >
               <Image
                 src={category.image}

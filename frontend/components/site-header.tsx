@@ -76,8 +76,10 @@ export function SiteHeader() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" aria-label="Search">
-              <Search className="h-5 w-5" />
+            <Button variant="ghost" size="icon" aria-label="Search products" asChild>
+              <Link href="/shop">
+                <Search className="h-5 w-5" />
+              </Link>
             </Button>
             <Button
               variant="ghost"
@@ -144,6 +146,41 @@ export function SiteHeader() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Lash Trays
+              </Link>
+              <Link
+                href="/about"
+                className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <Link
+                href="/shipping-returns"
+                className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Shipping & Returns
+              </Link>
+              <Link
+                href="/privacy-policy"
+                className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms"
+                className="text-sm font-medium tracking-wide text-foreground hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Terms
               </Link>
             </div>
           </nav>

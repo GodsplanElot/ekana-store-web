@@ -19,25 +19,28 @@ export function HeroSection() {
             <p className="text-base text-muted-foreground leading-relaxed max-w-md">
               Refined glosses, liners, and lashes designed for luxurious wear, soft confidence, and effortless mobile shopping.
             </p>
-            <div className="flex items-center gap-4 mt-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 mt-2">
               <Button
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
                 asChild
               >
-                <Link href="/shop">
-                  Shop Now
+                <Link href="/shop?category=Glosses">
+                  Shop Glosses
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link href="/shop?category=Glosses">Shop Glosses</Link>
+                <Link href="/shop?category=Lip%20Liners">Shop Liners</Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link href="/shop?category=Lashes">Shop Lashes</Link>
               </Button>
             </div>
           </div>
 
           {/* Hero image */}
-          <div className="relative aspect-[4/3] lg:aspect-square overflow-hidden rounded-xl">
+          <div className="relative aspect-[4/3] lg:aspect-square overflow-hidden rounded-lg">
             <Image
               src="/images/hero.jpg"
               alt="Ekana Cosmetics glosses, liners, and beauty products arranged on pink silk"

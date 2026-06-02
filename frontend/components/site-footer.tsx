@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Instagram } from "lucide-react";
 
 export function SiteFooter() {
   return (
@@ -84,7 +85,24 @@ export function SiteFooter() {
                 <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">Instagram</span>
+                <a
+                  href="https://instagram.com"
+                  rel="noreferrer"
+                  target="_blank"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://pinterest.com"
+                  rel="noreferrer"
+                  target="_blank"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Pinterest
+                </a>
               </li>
             </ul>
           </div>
@@ -116,6 +134,23 @@ export function SiteFooter() {
             2026 Ekana Cosmetics. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
+            <a
+              href="https://instagram.com"
+              rel="noreferrer"
+              target="_blank"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a
+              href="https://pinterest.com"
+              rel="noreferrer"
+              target="_blank"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Pinterest
+            </a>
             <Link href="/privacy-policy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
               Privacy Policy
             </Link>

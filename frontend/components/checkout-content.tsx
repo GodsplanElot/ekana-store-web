@@ -8,17 +8,47 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/lib/cart-context"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { formatNaira } from "@/lib/money"
+import { trackCheckoutAttempt, trackOrderConfirmation } from "@/lib/analytics"
 
 export function CheckoutContent() {
   const { items, totalPrice, clearCart } = useCart()
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
+  const [reference, setReference] = useState("")
+  const [paymentStatus, setPaymentStatus] = useState("")
 
   const shipping = totalPrice >= 20000 ? 0 : 2500
   const total = totalPrice + shipping
+
+  useEffect(() => {
+    const paymentReference = new URLSearchParams(window.location.search).get("reference")
+    if (!paymentReference) return
+
+    fetch("/api/payments/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reference: paymentReference }),
+    })
+      .then(async (response) => {
+        const payload = await response.json()
+        if (!response.ok) {
+          throw new Error(payload.error ?? "Unable to verify payment.")
+        }
+
+        setSubmitted(true)
+        setReference(paymentReference)
+        setPaymentStatus(payload.paymentStatus)
+        trackOrderConfirmation(paymentReference, payload.paymentStatus)
+        if (payload.paymentStatus === "paid") clearCart()
+      })
+      .catch((verificationError: Error) => {
+        setReference(paymentReference)
+        setError(verificationError.message)
+      })
+  }, [clearCart])
 
   if (submitted) {
     return (
@@ -39,8 +69,15 @@ export function CheckoutContent() {
             Order Confirmed
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-            Thank you for your purchase. We&apos;ll send you a confirmation email with your order details and tracking information.
+            {paymentStatus === "paid"
+              ? "Payment confirmed. We'll send you a confirmation email with your order details and tracking information."
+              : "Your order has been received. We'll confirm payment status and follow up with your order details."}
           </p>
+          {reference && (
+            <p className="mb-8 text-xs text-muted-foreground">
+              Reference: {reference}
+            </p>
+          )}
           <Button asChild>
             <Link href="/shop">Continue Shopping</Link>
           </Button>
@@ -85,7 +122,7 @@ export function CheckoutContent() {
         <div className="mb-8 rounded-lg border border-primary/25 bg-primary/10 px-4 py-3">
           <p className="text-sm font-medium text-foreground">Secure checkout</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Payments are completed through Paystack when payment credentials are configured.
+            Payments are completed through Paystack when payment credentials are configured. Orders are processed within 1-3 business days, with typical delivery in 2-5 business days in major cities.
           </p>
         </div>
 
@@ -97,6 +134,7 @@ export function CheckoutContent() {
                 e.preventDefault()
                 setSubmitting(true)
                 setError("")
+                trackCheckoutAttempt(items.length, total)
 
                 const formData = new FormData(e.currentTarget)
                 fetch("/api/checkout", {
@@ -124,12 +162,15 @@ export function CheckoutContent() {
                       throw new Error(payload.error ?? "Unable to place order.")
                     }
 
-                    clearCart()
                     if (payload.payment?.authorizationUrl) {
                       window.location.href = payload.payment.authorizationUrl
                       return
                     }
 
+                    clearCart()
+                    setReference(payload.reference)
+                    setPaymentStatus("pending")
+                    trackOrderConfirmation(payload.reference, "pending")
                     setSubmitted(true)
                   })
                   .catch((checkoutError: Error) => {
@@ -257,6 +298,11 @@ export function CheckoutContent() {
                 {submitting ? "Preparing Checkout" : "Pay with Paystack"} &middot; {formatNaira(total)}
               </Button>
               {error && <p className="text-sm text-destructive">{error}</p>}
+              <p className="text-xs leading-5 text-muted-foreground">
+                In line with hygiene standards, purchases are final unless an
+                item arrives damaged, defective, or incorrect. Report issues
+                within 48 hours with verifiable evidence.
+              </p>
             </form>
           </div>
 
