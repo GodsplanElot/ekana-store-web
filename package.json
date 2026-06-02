@@ -1,0 +1,15 @@
+{
+  "name": "ekana-store-web-root",
+  "private": true,
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "build": "pnpm --dir frontend build",
+    "dev": "pnpm --dir frontend dev",
+    "lint": "pnpm --dir frontend lint",
+    "start": "pnpm --dir frontend start",
+    "vercel-build": "pnpm --dir frontend build"
+  },
+  "dependencies": {
+    "next": "16.1.6"
+  }
+}
