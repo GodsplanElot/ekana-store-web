@@ -35,6 +35,7 @@ const CART_UPDATED_EVENT = "ekana-cart-updated"
 interface StoredCartItem {
   productId: string
   quantity: number
+  product?: Product
 }
 
 function getCartSnapshot() {
@@ -47,7 +48,7 @@ function parseStoredItems(snapshot: string): CartItem[] {
     if (!Array.isArray(storedItems)) return []
 
     return storedItems.flatMap((item) => {
-      const product = products.find((p) => p.id === item.productId)
+      const product = item.product ?? products.find((p) => p.id === item.productId)
       if (!product || !Number.isFinite(item.quantity) || item.quantity <= 0) {
         return []
       }
@@ -63,6 +64,7 @@ function writeStoredItems(items: CartItem[]) {
   const storedItems = items.map((item) => ({
     productId: item.product.id,
     quantity: item.quantity,
+    product: item.product,
   }))
 
   window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(storedItems))

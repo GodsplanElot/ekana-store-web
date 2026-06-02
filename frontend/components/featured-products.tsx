@@ -2,11 +2,13 @@
 
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { getRestockedProducts } from "@/lib/products"
+import type { Product } from "@/lib/products"
 import { ProductCard } from "@/components/product-card"
 
-export function FeaturedProducts() {
-  const featured = getRestockedProducts()
+export function FeaturedProducts({ products }: { products: Product[] }) {
+  const featured = products
+    .filter((product) => product.isRestocked || product.isFeatured)
+    .slice(0, 4)
 
   return (
     <section className="py-16 lg:py-24">

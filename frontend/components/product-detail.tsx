@@ -7,27 +7,30 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/lib/cart-context"
-import { products, type Product } from "@/lib/products"
+import type { Product } from "@/lib/products"
 import { ProductCard } from "@/components/product-card"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { formatNaira } from "@/lib/money"
+import { trackAddToCart, trackProductView } from "@/lib/analytics"
 
 interface ProductDetailProps {
   product: Product
+  relatedProducts: Product[]
 }
 
-export function ProductDetail({ product }: ProductDetailProps) {
+export function ProductDetail({ product, relatedProducts }: ProductDetailProps) {
   const { addItem } = useCart()
   const [quantity, setQuantity] = useState(1)
 
-  const relatedProducts = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4)
+  useEffect(() => {
+    trackProductView(product)
+  }, [product])
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addItem(product)
     }
+    trackAddToCart(product, quantity)
   }
 
   return (
@@ -56,7 +59,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
         {/* Product */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Image */}
-          <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
+          <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
             <Image
               src={product.image}
               alt={product.name}
@@ -176,14 +179,14 @@ export function ProductDetail({ product }: ProductDetailProps) {
               <div className="flex items-center gap-3">
                 <Truck className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 <div>
-                  <p className="text-xs font-medium text-foreground">Free Shipping</p>
-                  <p className="text-xs text-muted-foreground">Delivery in major cities</p>
+                  <p className="text-xs font-medium text-foreground">Delivery</p>
+                  <p className="text-xs text-muted-foreground">2-5 days in major cities</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <RotateCcw className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 <div>
-                  <p className="text-xs font-medium text-foreground">Easy Returns</p>
+                  <p className="text-xs font-medium text-foreground">Final Sale</p>
                   <p className="text-xs text-muted-foreground">48-hour issue window</p>
                 </div>
               </div>

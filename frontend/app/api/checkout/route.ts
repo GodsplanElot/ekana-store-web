@@ -5,6 +5,7 @@ import { formatNaira } from "@/lib/money"
 import { products } from "@/lib/products"
 import { sendOrderEmails } from "@/lib/server/email"
 import { initializePaystackPayment } from "@/lib/server/paystack"
+import { mapSupabaseProduct } from "@/lib/server/products"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 
 const checkoutSchema = z.object({
@@ -33,9 +34,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid checkout details." }, { status: 400 })
   }
 
+  const supabase = createSupabaseAdmin()
+  const productIds = parsed.data.items.map((item) => item.productId)
+  const catalogProducts = supabase
+    ? await supabase
+        .from("products")
+        .select("*")
+        .in("id", productIds)
+        .eq("is_active", true)
+        .then(({ data, error }) =>
+          error || !data ? [] : data.map((product) => mapSupabaseProduct(product))
+        )
+    : products
+
   const resolvedItems = parsed.data.items.map((item) => {
-    const product = products.find((p) => p.id === item.productId)
+    const product = catalogProducts.find((p) => p.id === item.productId)
     if (!product || !product.active || !product.inStock) return null
+    if (product.inventoryCount > 0 && item.quantity > product.inventoryCount) return null
     return {
       productId: product.id,
       name: product.name,
@@ -61,7 +76,6 @@ export async function POST(request: Request) {
   const origin = request.headers.get("origin") ?? process.env.NEXT_PUBLIC_APP_URL ?? ""
   const callbackUrl = `${origin}/checkout?reference=${encodeURIComponent(reference)}`
 
-  const supabase = createSupabaseAdmin()
   if (supabase) {
     const { error } = await supabase.from("orders").insert({
       reference,

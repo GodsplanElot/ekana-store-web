@@ -2,12 +2,12 @@
 
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { products, categories } from "@/lib/products"
+import { categories, type Product } from "@/lib/products"
 import { ProductCard } from "@/components/product-card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export function ShopContent() {
+export function ShopContent({ products }: { products: Product[] }) {
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get("category")
   const validCategory = categories.find((category) => category === categoryParam)

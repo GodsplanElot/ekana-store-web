@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { products as seedProducts } from "@/lib/products"
+import { mapSupabaseProduct } from "@/lib/server/products"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 
 export async function GET() {
@@ -19,5 +20,8 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ products: data, source: "supabase" })
+  return NextResponse.json({
+    products: data.map((product) => mapSupabaseProduct(product)),
+    source: "supabase",
+  })
 }

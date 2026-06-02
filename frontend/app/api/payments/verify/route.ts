@@ -13,7 +13,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing payment reference." }, { status: 400 })
   }
 
-  const payment = await verifyPaystackPayment(parsed.data.reference)
+  let payment
+  try {
+    payment = await verifyPaystackPayment(parsed.data.reference)
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error ? error.message : "Unable to verify payment.",
+      },
+      { status: 502 }
+    )
+  }
   const paymentStatus = payment.status === "success" ? "paid" : payment.status
 
   const supabase = createSupabaseAdmin()

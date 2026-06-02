@@ -23,7 +23,7 @@ export async function sendOrderEmails({
     from,
     to: customerEmail,
     subject: `Ekana order received - ${reference}`,
-    text: `Hi ${customerName}, your Ekana Cosmetics order ${reference} has been received. Total: ${total}.`,
+    text: `Hi ${customerName}, your Ekana Cosmetics order ${reference} has been received. Total: ${total}. Orders are processed within 1-3 business days. If an item arrives damaged, defective, or incorrect, please contact support within 48 hours with verifiable evidence.`,
   })
 
   if (adminEmail) {
