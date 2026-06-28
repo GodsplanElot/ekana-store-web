@@ -110,10 +110,10 @@ export function ProductForm({ initialProduct }: ProductFormProps) {
             <div><label className={labelClass} htmlFor="slug">URL slug</label><input className={inputClass} id="slug" onChange={(event) => { setSlugEdited(true); update("slug", makeSlug(event.target.value)) }} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required value={product.slug} /></div>
             <div><label className={labelClass} htmlFor="category">Category</label><select className={inputClass} id="category" onChange={(event) => update("category", event.target.value as ProductMutation["category"])} value={product.category}>{categories.map((category) => <option key={category}>{category}</option>)}</select></div>
             <div><label className={labelClass} htmlFor="shade">Shade</label><input className={inputClass} id="shade" onChange={(event) => update("shade", event.target.value)} value={product.shade ?? ""} /></div>
-            <div><label className={labelClass} htmlFor="price">Price (?)</label><input className={inputClass} id="price" min="0" onChange={(event) => update("price", Number(event.target.value))} required step="1" type="number" value={product.price} /></div>
+            <div><label className={labelClass} htmlFor="price">Price (NGN)</label><input className={inputClass} id="price" min="0" onChange={(event) => update("price", Number(event.target.value))} required step="1" type="number" value={product.price} /></div>
             <div><label className={labelClass} htmlFor="inventory">Inventory</label><input className={inputClass} id="inventory" min="0" onChange={(event) => update("inventoryCount", Number(event.target.value))} required step="1" type="number" value={product.inventoryCount} /></div>
             <div className="sm:col-span-2"><label className={labelClass} htmlFor="description">Description</label><textarea className="min-h-32 w-full border border-stone-900/20 bg-white p-3 text-sm leading-6 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10" id="description" minLength={10} onChange={(event) => update("description", event.target.value)} required value={product.description} /></div>
-            <div className="sm:col-span-2"><label className={labelClass} htmlFor="features">Features <span className="normal-case tracking-normal text-stone-400">— one per line</span></label><textarea className="min-h-32 w-full border border-stone-900/20 bg-white p-3 text-sm leading-6 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10" id="features" onChange={(event) => setFeaturesText(event.target.value)} value={featuresText} /></div>
+            <div className="sm:col-span-2"><label className={labelClass} htmlFor="features">Features <span className="normal-case tracking-normal text-stone-400">- one per line</span></label><textarea className="min-h-32 w-full border border-stone-900/20 bg-white p-3 text-sm leading-6 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10" id="features" onChange={(event) => setFeaturesText(event.target.value)} value={featuresText} /></div>
           </div>
         </section>
       </div>
@@ -126,7 +126,7 @@ export function ProductForm({ initialProduct }: ProductFormProps) {
           </div>
           <label className="mt-4 flex h-11 cursor-pointer items-center justify-center gap-2 border border-stone-900/20 bg-white text-sm font-medium transition hover:border-stone-950" htmlFor="image">
             {isUploading ? <LoaderCircle className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
-            {isUploading ? "Uploading…" : "Choose image"}
+            {isUploading ? "Uploading..." : "Choose image"}
           </label>
           <input accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={isUploading} id="image" onChange={handleImage} type="file" />
           <p className="mt-3 text-xs leading-5 text-stone-500">JPEG, PNG or WebP. Maximum 5 MB. Square images work best.</p>
@@ -142,7 +142,7 @@ export function ProductForm({ initialProduct }: ProductFormProps) {
         {error ? <p aria-live="polite" className="border-l-2 border-red-700 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{error}</p> : null}
         <button className="flex h-12 w-full items-center justify-center gap-2 bg-stone-950 px-5 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:opacity-60" disabled={isSaving || isUploading || !product.imageUrl} type="submit">
           {isSaving ? <LoaderCircle className="size-4 animate-spin" /> : <Save className="size-4" />}
-          {isSaving ? "Saving…" : isEditing ? "Save changes" : "Create product"}
+          {isSaving ? "Saving..." : isEditing ? "Save changes" : "Create product"}
         </button>
       </aside>
     </form>

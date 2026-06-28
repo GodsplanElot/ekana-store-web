@@ -54,6 +54,6 @@ export function OrderStatusForm({ reference, initialPaymentStatus, initialFulfil
       <div><label className={labelClass} htmlFor="payment">Payment</label><select className={selectClass} disabled={!canEditPayment} id="payment" onChange={(event) => setPaymentStatus(event.target.value)} value={paymentStatus}>{["pending", "paid", "failed", "refunded"].map((status) => <option key={status}>{status}</option>)}</select>{!canEditPayment ? <p className="mt-2 text-xs text-stone-500">Only owners and admins can change payment status.</p> : null}</div>
     </div>
     {error ? <p className="mt-4 bg-red-50 p-3 text-sm text-red-800" role="alert">{error}</p> : null}
-    <button className="mt-5 flex h-11 w-full items-center justify-center gap-2 bg-stone-950 text-sm font-semibold text-white disabled:opacity-60" disabled={isSaving} type="submit">{isSaving ? <LoaderCircle className="size-4 animate-spin" /> : <Save className="size-4" />}{isSaving ? "Saving…" : "Save status"}</button>
+    <button className="mt-5 flex h-11 w-full items-center justify-center gap-2 bg-stone-950 text-sm font-semibold text-white disabled:opacity-60" disabled={isSaving} type="submit">{isSaving ? <LoaderCircle className="size-4 animate-spin" /> : <Save className="size-4" />}{isSaving ? "Saving..." : "Save status"}</button>
   </form>
 }
