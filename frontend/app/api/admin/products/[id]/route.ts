@@ -5,37 +5,25 @@ import { productMutationSchema } from "@/lib/validation/product"
 
 const productRoles = ["owner", "admin", "inventory"] as const
 
-export async function GET() {
-  const staff = await getCurrentStaff()
-  if (!staff) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+type ProductRouteProps = { params: Promise<{ id: string }> }
 
-  const supabase = createSupabaseAdmin()
-  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
-
-  const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false })
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-  return NextResponse.json({ products: data })
-}
-
-export async function POST(request: Request) {
+export async function PATCH(request: Request, { params }: ProductRouteProps) {
   const staff = await getCurrentStaff()
   if (!staff || !staffHasRole(staff, productRoles)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const parsed = productMutationSchema.safeParse(await request.json())
+  const parsed = productMutationSchema.omit({ id: true }).safeParse(await request.json())
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid product payload", issues: parsed.error.flatten() }, { status: 400 })
   }
 
+  const { id } = await params
   const supabase = createSupabaseAdmin()
   if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
 
   const product = parsed.data
-  const id = product.id ?? crypto.randomUUID()
-  const { data, error } = await supabase.from("products").insert({
-    id,
+  const { error } = await supabase.from("products").update({
     slug: product.slug,
     name: product.name,
     description: product.description,
@@ -48,12 +36,32 @@ export async function POST(request: Request) {
     is_active: product.isActive,
     is_featured: product.isFeatured,
     is_restocked: product.isRestocked,
-  }).select("id").single()
+    updated_at: new Date().toISOString(),
+  }).eq("id", id)
 
   if (error) {
     const status = error.code === "23505" ? 409 : 500
     return NextResponse.json({ error: status === 409 ? "A product with this slug already exists" : error.message }, { status })
   }
 
-  return NextResponse.json({ ok: true, id: data.id }, { status: 201 })
+  return NextResponse.json({ ok: true })
+}
+
+export async function DELETE(_: Request, { params }: ProductRouteProps) {
+  const staff = await getCurrentStaff()
+  if (!staff || !staffHasRole(staff, productRoles)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
+  const { id } = await params
+  const supabase = createSupabaseAdmin()
+  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
+
+  const { error } = await supabase.from("products").update({
+    is_active: false,
+    updated_at: new Date().toISOString(),
+  }).eq("id", id)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ ok: true })
 }
