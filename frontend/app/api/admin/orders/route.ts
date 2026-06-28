@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { isAdminRequest } from "@/lib/server/admin-auth"
+import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 
 const orderUpdateSchema = z.object({
@@ -10,8 +10,9 @@ const orderUpdateSchema = z.object({
   fulfillmentStatus: z.string().optional(),
 })
 
-export async function GET(request: NextRequest) {
-  if (!(await isAdminRequest(request))) {
+export async function GET() {
+  const staff = await getCurrentStaff()
+  if (!staff || !staffHasRole(staff, ["owner", "admin", "support"])) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
@@ -33,7 +34,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  if (!(await isAdminRequest(request))) {
+  const staff = await getCurrentStaff()
+  if (!staff || !staffHasRole(staff, ["owner", "admin", "support"])) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 

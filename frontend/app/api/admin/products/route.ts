@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { isAdminRequest } from "@/lib/server/admin-auth"
+import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 
 const productMutationSchema = z.object({
@@ -21,7 +21,8 @@ const productMutationSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
-  if (!(await isAdminRequest(request))) {
+  const staff = await getCurrentStaff()
+  if (!staff || !staffHasRole(staff, ["owner", "admin", "inventory"])) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 

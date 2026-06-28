@@ -7,9 +7,10 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 
 type LoginFormProps = {
   initialError?: string
+  nextPath?: string
 }
 
-export function LoginForm({ initialError }: LoginFormProps) {
+export function LoginForm({ initialError, nextPath = "/admin" }: LoginFormProps) {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -30,7 +31,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
         return
       }
 
-      router.replace("/admin")
+      router.replace(nextPath)
       router.refresh()
     } catch {
       setError("Sign-in is temporarily unavailable. Please try again.")
@@ -55,7 +56,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
 
       <button className="flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-stone-950 px-5 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60" disabled={isSubmitting} type="submit">
         {isSubmitting ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" /> : null}
-        {isSubmitting ? "Signing in…" : "Sign in"}
+        {isSubmitting ? "Signing inâ€¦" : "Sign in"}
       </button>
     </form>
   )
