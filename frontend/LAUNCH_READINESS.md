@@ -77,19 +77,17 @@ RESEND_FROM_EMAIL=
 ORDER_NOTIFICATION_EMAIL=
 ```
 
-## 6. API-only Admin Operations
+## 6. Staff Admin Operations
 
-- [ ] Configure `ADMIN_API_TOKEN` or `ADMIN_EMAILS`.
-- [ ] Test product create/update through `POST /api/admin/products`.
-- [ ] Test order review through `GET /api/admin/orders`.
-- [ ] Test order status updates through `PATCH /api/admin/orders`.
+- [ ] Apply staff and audit migrations, then create the first owner account.
+- [ ] Test product creation, image upload, editing, and deactivation in `/admin/products`.
+- [ ] Test order review and filtering in `/admin/orders`.
+- [ ] Test valid fulfilment transitions and staff role restrictions.
 - [ ] Document the admin operating routine for product updates, restocks, and order fulfillment.
 
 Admin variables:
 
 ```txt
-ADMIN_API_TOKEN=
-ADMIN_EMAILS=
 ```
 
 ## 7. Analytics & Monitoring
