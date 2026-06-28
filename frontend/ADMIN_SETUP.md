@@ -21,6 +21,7 @@ Run the SQL files in order through the Supabase SQL editor:
 1. `db/migrations/0001_initial_backend.sql`
 2. `db/migrations/0002_staff_users.sql`
 3. `db/migrations/0003_product_images.sql`
+4. `db/migrations/0004_admin_audit_logs.sql`
 
 ## Create the first owner
 

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { writeAdminAuditLog } from "@/lib/server/admin-audit"
 import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 
@@ -65,5 +66,6 @@ export async function PATCH(request: Request) {
 
   const { error } = await supabase.from("orders").update(update).eq("reference", parsed.data.reference)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  await writeAdminAuditLog({ staffUserId: staff.id, action: "order.status_updated", entityType: "order", entityId: parsed.data.reference, metadata: { paymentStatus: parsed.data.paymentStatus, fulfillmentStatus: parsed.data.fulfillmentStatus } })
   return NextResponse.json({ ok: true })
 }

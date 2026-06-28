@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { writeAdminAuditLog } from "@/lib/server/admin-audit"
 import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 import { productMutationSchema } from "@/lib/validation/product"
@@ -55,5 +56,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: status === 409 ? "A product with this slug already exists" : error.message }, { status })
   }
 
+  await writeAdminAuditLog({ staffUserId: staff.id, action: "product.created", entityType: "product", entityId: data.id, metadata: { name: product.name, slug: product.slug } })
   return NextResponse.json({ ok: true, id: data.id }, { status: 201 })
 }
