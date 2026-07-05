@@ -4,6 +4,8 @@ import { writeAdminAuditLog } from "@/lib/server/admin-audit"
 import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 
+import { staffRoles } from '@/lib/server/require-staff'
+
 const inviteSchema = z.object({
   email: z.string().trim().email(),
   displayName: z.string().trim().min(2).max(120),
@@ -11,7 +13,7 @@ const inviteSchema = z.object({
 })
 const updateSchema = z.object({
   id: z.string().uuid(),
-  role: z.enum(roles),
+  role: z.enum(staffRoles),
   isActive: z.boolean(),
 })
 
