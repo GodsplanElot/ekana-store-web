@@ -3,6 +3,8 @@ import Link from "next/link"
 import { Boxes, ClipboardList, LayoutDashboard, LogOut, Users } from "lucide-react"
 import { requireStaff, type StaffRole } from "@/lib/server/require-staff"
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: {
     default: "Admin | Ekana Cosmetics",
