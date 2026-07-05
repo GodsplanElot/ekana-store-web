@@ -81,7 +81,7 @@ export function ProductForm({ initialProduct }: ProductFormProps) {
     }
 
     try {
-      const response = await fetch(isEditing ? `/api/admin/products/${initialProduct.id}` : "/api/admin/products", {
+      const response = await fetch(isEditing ? `/api/admin/products/${initialProduct!.id}` : "/api/admin/products", {
         method: isEditing ? "PATCH" : "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(payload),
