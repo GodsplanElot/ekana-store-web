@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { ArrowUpRight, Instagram } from 'lucide-react'
 
+import { BrandLogo } from '@/components/brand-logo'
 import { LaunchCountdown } from '@/components/launch-countdown'
 
 export function LaunchScreen({ launchAt }: { launchAt: string }) {
@@ -21,9 +22,11 @@ export function LaunchScreen({ launchAt }: { launchAt: string }) {
           <div className='absolute inset-0 bg-[linear-gradient(180deg,rgba(38,13,21,0.06),rgba(38,13,21,0.52))]' />
 
           <div className='absolute inset-x-0 top-0 flex items-center justify-between p-5 text-[#fff9f4] sm:p-8 lg:p-10'>
-            <p className='launch-wordmark text-xl tracking-[-0.03em] sm:text-2xl'>
-              Ekana Cosmetics
-            </p>
+            <BrandLogo
+              priority
+              sizes='56px'
+              className='size-12 rounded-sm bg-[#fff9f4]/90 shadow-[0_14px_34px_rgb(38_13_21_/_22%)] sm:size-14'
+            />
             <p className='text-[0.62rem] font-semibold uppercase tracking-[0.28em]'>
               Lagos · Nigeria
             </p>
