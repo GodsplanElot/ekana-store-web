@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Boxes, ClipboardList, LayoutDashboard, LogOut, Users } from "lucide-react"
+import { BrandLogo } from "@/components/brand-logo"
 import { requireStaff, type StaffRole } from "@/lib/server/require-staff"
 
 export const metadata: Metadata = {
@@ -30,8 +31,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-[#f5f1eb] text-stone-950">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-stone-900/10 bg-[#1d1b19] text-stone-100 lg:flex lg:flex-col">
         <div className="border-b border-white/10 px-7 py-7">
-          <p className="font-serif text-2xl tracking-wide">EKANA</p>
-          <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-400">Operations</p>
+          <Link href="/admin" className="flex items-center gap-3" aria-label="Ekana admin overview">
+            <BrandLogo
+              alt="Ekana Cosmetics"
+              sizes="44px"
+              className="size-11 rounded-sm bg-white/95"
+            />
+            <span>
+              <span className="block font-serif text-2xl tracking-wide">EKANA</span>
+              <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-400">Operations</span>
+            </span>
+          </Link>
         </div>
 
         <nav aria-label="Admin navigation" className="flex-1 space-y-1 px-4 py-6">
@@ -63,10 +73,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="lg:pl-64">
         <header className="sticky top-0 z-20 border-b border-stone-900/10 bg-[#f5f1eb]/95 px-4 py-4 backdrop-blur lg:hidden">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="font-serif text-xl">EKANA</p>
-              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-stone-500">Operations</p>
-            </div>
+            <Link href="/admin" className="flex items-center gap-3" aria-label="Ekana admin overview">
+              <BrandLogo
+                alt="Ekana Cosmetics"
+                sizes="40px"
+                className="size-10 rounded-sm bg-white"
+              />
+              <span>
+                <span className="block font-serif text-xl">EKANA</span>
+                <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-stone-500">Operations</span>
+              </span>
+            </Link>
             <form action="/auth/signout" method="post">
               <button aria-label="Sign out" className="grid size-10 place-items-center border border-stone-900/15" type="submit"><LogOut className="size-4" /></button>
             </form>
