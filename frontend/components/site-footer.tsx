@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Instagram } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 
 export function SiteFooter() {
   return (
@@ -10,9 +11,13 @@ export function SiteFooter() {
           <div className="md:col-span-1">
             <Link
               href="/"
-              className="font-serif text-xl tracking-tight text-card-foreground"
+              className="inline-flex items-center gap-3 text-card-foreground"
+              aria-label="Ekana Cosmetics home"
             >
-              Ekana Cosmetics
+              <BrandLogo sizes="42px" className="size-10" />
+              <span className="font-serif text-xl tracking-tight">
+                Ekana Cosmetics
+              </span>
             </Link>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
               Glosses, liners, and lashes made to feel luxurious, effortless,

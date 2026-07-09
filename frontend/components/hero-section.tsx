@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { BrandLogo } from "@/components/brand-logo"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 
@@ -10,9 +11,16 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 items-center py-12 lg:py-20">
           {/* Text content */}
           <div className="flex flex-col gap-6 lg:pr-16">
-            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
-              Ekana Cosmetics
-            </p>
+            <div className="flex items-center gap-3">
+              <BrandLogo
+                priority
+                sizes="40px"
+                className="size-10"
+              />
+              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
+                Ekana Cosmetics
+              </p>
+            </div>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-[1.1] text-balance">
               Making beauty feel as good as it looks
             </h1>

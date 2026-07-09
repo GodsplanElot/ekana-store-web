@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ShoppingBag, Menu, Search, X } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart-context";
 import { useState } from "react";
@@ -69,9 +70,14 @@ export function SiteHeader() {
           {/* Logo */}
           <Link
             href="/"
-            className="font-serif text-2xl tracking-tight text-foreground"
+            className="flex items-center"
+            aria-label="Ekana Cosmetics home"
           >
-            Ekana Cosmetics
+            <BrandLogo
+              priority
+              sizes="48px"
+              className="size-11 sm:size-12"
+            />
           </Link>
 
           {/* Actions */}
