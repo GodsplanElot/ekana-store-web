@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { writeAdminAuditLog } from "@/lib/server/admin-audit"
-import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
+import { getCurrentStaff, staffHasRole, staffRoles } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 
 const inviteSchema = z.object({
@@ -11,7 +11,7 @@ const inviteSchema = z.object({
 })
 const updateSchema = z.object({
   id: z.string().uuid(),
-  role: z.enum(roles),
+  role: z.enum(staffRoles),
   isActive: z.boolean(),
 })
 
