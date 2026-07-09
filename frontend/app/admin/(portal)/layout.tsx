@@ -4,6 +4,8 @@ import { Boxes, ClipboardList, LayoutDashboard, LogOut, Users } from "lucide-rea
 import { BrandLogo } from "@/components/brand-logo"
 import { requireStaff, type StaffRole } from "@/lib/server/require-staff"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: {
     default: "Admin | Ekana Cosmetics",
