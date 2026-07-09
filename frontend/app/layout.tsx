@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: "Ekana Cosmetics - Mobile Beauty Store",
   description:
     "Shop glosses, lip liners, and lashes from Ekana Cosmetics. Making beauty feel as good as it looks.",
+  icons: {
+    icon: "/icon.jpeg",
+    apple: "/apple-icon.jpeg",
+  },
 };
 
 export const viewport: Viewport = {
