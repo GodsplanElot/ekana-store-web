@@ -29,7 +29,7 @@ export function CartSheet() {
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
-      <SheetContent className="relative flex flex-col overflow-hidden bg-background">
+      <SheetContent className="flex flex-col overflow-hidden bg-background">
         <BrandLogo
           variant="watermark"
           sizes="260px"
