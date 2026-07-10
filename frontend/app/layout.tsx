@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   description:
     "Shop glosses, lip liners, and lashes from Ekana Cosmetics. Making beauty feel as good as it looks.",
   icons: {
-    icon: "/icon.jpeg",
-    apple: "/apple-icon.jpeg",
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf5f7",
+  themeColor: "#fff7ec",
 };
 
 export default function RootLayout({
