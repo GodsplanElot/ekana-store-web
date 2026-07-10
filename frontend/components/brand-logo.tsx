@@ -9,7 +9,7 @@ type BrandLogoProps = {
   markClassName?: string;
   priority?: boolean;
   sizes?: string;
-  surface?: "none" | "glass" | "ivory" | "ink";
+  surface?: "none" | "glass" | "ivory" | "ink" | "cocoa" | "rose";
   textClassName?: string;
   variant?: "mark" | "lockup" | "seal" | "watermark";
 };
@@ -24,6 +24,19 @@ const surfaceClasses = {
     "rounded-full border border-primary/15 bg-[#fffaf2] shadow-[0_14px_36px_rgba(75,40,48,0.12)]",
   ink:
     "rounded-full border border-white/15 bg-[#211814] shadow-[0_16px_44px_rgba(0,0,0,0.28)]",
+  cocoa:
+    "rounded-full border border-[#f1c2bd]/35 bg-[#211814] shadow-[0_16px_44px_rgba(33,24,20,0.3)] ring-1 ring-white/10",
+  rose:
+    "rounded-full border border-primary/20 bg-primary shadow-[0_16px_42px_rgba(107,57,72,0.28)] ring-1 ring-white/15",
+};
+
+const imageToneClasses = {
+  none: "",
+  glass: "contrast-125 saturate-150 drop-shadow-[0_1px_2px_rgba(33,24,20,0.22)]",
+  ivory: "contrast-125 saturate-150 drop-shadow-[0_1px_2px_rgba(33,24,20,0.2)]",
+  ink: "contrast-125 saturate-150 drop-shadow-[0_1px_4px_rgba(255,246,238,0.35)]",
+  cocoa: "contrast-125 saturate-150 drop-shadow-[0_1px_4px_rgba(255,246,238,0.38)]",
+  rose: "contrast-125 saturate-150 drop-shadow-[0_1px_4px_rgba(255,246,238,0.35)]",
 };
 
 export function BrandLogo({
@@ -53,7 +66,7 @@ export function BrandLogo({
           height={2048}
           priority={priority}
           sizes={sizes}
-          className={cn("h-full w-full object-contain", imageClassName)}
+          className={cn("h-full w-full object-contain", imageToneClasses[surface], imageClassName)}
         />
       </span>
     );
@@ -75,7 +88,7 @@ export function BrandLogo({
         height={2048}
         priority={priority}
         sizes={sizes}
-        className={cn("h-full w-full object-contain", imageClassName)}
+        className={cn("h-full w-full object-contain", imageToneClasses[surface], imageClassName)}
       />
     </span>
   );
@@ -132,7 +145,7 @@ export function BrandLogo({
         height={2048}
         priority={priority}
         sizes={sizes}
-        className={cn("h-full w-full object-contain", imageClassName)}
+        className={cn("h-full w-full object-contain", imageToneClasses[surface], imageClassName)}
       />
     </span>
   );

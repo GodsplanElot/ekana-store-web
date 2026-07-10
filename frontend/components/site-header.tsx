@@ -59,8 +59,9 @@ export function SiteHeader() {
               <BrandLogo
                 priority
                 variant="lockup"
+                surface="cocoa"
                 sizes="52px"
-                markClassName="size-12"
+                markClassName="size-12 p-1.5"
                 textClassName="hidden sm:block"
               />
             </Link>
@@ -115,7 +116,13 @@ export function SiteHeader() {
               className="absolute -right-12 -top-16 size-44 opacity-[0.06]"
             />
             <div className="mb-4 flex items-center justify-between">
-              <BrandLogo variant="seal" sizes="32px" markClassName="size-8 p-1" />
+              <BrandLogo
+                variant="seal"
+                surface="rose"
+                sizes="32px"
+                markClassName="size-8 p-1"
+                className="border-primary/20 bg-primary/10"
+              />
               <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                 Beauty menu
               </span>
