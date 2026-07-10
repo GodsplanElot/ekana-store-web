@@ -1,6 +1,7 @@
 import "server-only"
 
 import { redirect } from "next/navigation"
+import { isDevAuthBypassEnabled } from "@/lib/server/env"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 
@@ -26,6 +27,15 @@ type StaffUserRow = {
   is_active: boolean
 }
 
+const devStaffUser: StaffUser = {
+  id: "dev-staff",
+  userId: "dev-user",
+  email: "dev@ekana.local",
+  displayName: "Development Owner",
+  role: "owner",
+  isActive: true,
+}
+
 function mapStaffUser(row: StaffUserRow): StaffUser {
   return {
     id: row.id,
@@ -38,6 +48,8 @@ function mapStaffUser(row: StaffUserRow): StaffUser {
 }
 
 export async function getCurrentStaff(): Promise<StaffUser | null> {
+  if (isDevAuthBypassEnabled()) return devStaffUser
+
   const supabase = await createSupabaseServerClient()
   const { data: { user }, error: userError } = await supabase.auth.getUser()
 

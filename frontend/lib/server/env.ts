@@ -9,3 +9,10 @@ export function isSupabaseConfigured() {
       getOptionalEnv("SUPABASE_SERVICE_ROLE_KEY")
   )
 }
+
+export function isDevAuthBypassEnabled() {
+  return (
+    getOptionalEnv("EKANA_DEV_AUTH_BYPASS") === "true" &&
+    getOptionalEnv("VERCEL_ENV") !== "production"
+  )
+}

@@ -1,9 +1,21 @@
 import { NextResponse, type NextRequest } from "next/server"
+import { isDevAuthBypassEnabled } from "@/lib/server/env"
 import { updateSupabaseSession } from "@/lib/supabase/proxy"
 
 export async function proxy(request: NextRequest) {
   const { response, user } = await updateSupabaseSession(request)
   const isLoginRoute = request.nextUrl.pathname === "/admin/login"
+
+  if (isDevAuthBypassEnabled()) {
+    if (isLoginRoute) {
+      const adminUrl = request.nextUrl.clone()
+      adminUrl.pathname = "/admin"
+      adminUrl.search = ""
+      return NextResponse.redirect(adminUrl)
+    }
+
+    return response
+  }
 
   if (!user && !isLoginRoute) {
     const loginUrl = request.nextUrl.clone()
