@@ -1,149 +1,127 @@
 import Link from "next/link";
 import { Instagram } from "lucide-react";
+
 import { BrandLogo } from "@/components/brand-logo";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto max-w-7xl px-4 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
+    <footer className="relative overflow-hidden border-t border-foreground/10 bg-[#211814] text-primary-foreground">
+      <BrandLogo
+        variant="watermark"
+        sizes="520px"
+        className="absolute -bottom-36 -right-24 size-[520px] opacity-[0.045]"
+      />
+      <div className="relative mx-auto max-w-7xl px-4 py-12 lg:px-8 lg:py-16">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           <div className="md:col-span-1">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 text-card-foreground"
+              className="inline-flex items-center gap-3"
               aria-label="Ekana Cosmetics home"
             >
-              <BrandLogo sizes="42px" className="size-10" />
-              <span className="font-serif text-xl tracking-tight">
-                Ekana Cosmetics
-              </span>
+              <BrandLogo
+                variant="lockup"
+                surface="ink"
+                sizes="48px"
+                markClassName="size-12"
+                textClassName="[&_span:first-child]:text-primary-foreground [&_span:last-child]:text-primary-foreground/60"
+              />
             </Link>
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              Glosses, liners, and lashes made to feel luxurious, effortless,
-              and authentic.
+            <p className="mt-5 max-w-xs text-sm leading-7 text-primary-foreground/60">
+              Glosses, liners, and lashes made to feel luxurious, effortless, and authentic.
             </p>
           </div>
 
-          {/* Shop */}
           <div>
-            <h3 className="text-xs font-semibold tracking-widest uppercase text-card-foreground mb-4">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground">
               Shop
             </h3>
             <ul className="flex flex-col gap-2.5">
-              <li>
-                <Link
-                  href="/shop"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  All Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/shop?category=Glosses"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Glosses
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/shop?category=Lip%20Liners"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Lip Liners
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/shop?category=Lashes"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Lashes
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/shop?category=Lash%20Trays"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Lash Trays
-                </Link>
-              </li>
+              {[
+                ["All Products", "/shop"],
+                ["Glosses", "/shop?category=Glosses"],
+                ["Lip Liners", "/shop?category=Lip%20Liners"],
+                ["Lashes", "/shop?category=Lashes"],
+                ["Lash Trays", "/shop?category=Lash%20Trays"],
+              ].map(([label, href]) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Company */}
           <div>
-            <h3 className="text-xs font-semibold tracking-widest uppercase text-card-foreground mb-4">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground">
               Company
             </h3>
             <ul className="flex flex-col gap-2.5">
+              {[
+                ["About", "/about"],
+                ["FAQ", "/faq"],
+                ["Contact", "/contact"],
+              ].map(([label, href]) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
               <li>
-                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
-              </li>
-              <li>
-                <Link href="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
-              </li>
-              <li>
-                <a
-                  href="https://instagram.com"
-                  rel="noreferrer"
-                  target="_blank"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <a href="https://instagram.com" rel="noreferrer" target="_blank" className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground">
                   Instagram
                 </a>
               </li>
               <li>
-                <a
-                  href="https://pinterest.com"
-                  rel="noreferrer"
-                  target="_blank"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <a href="https://pinterest.com" rel="noreferrer" target="_blank" className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground">
                   Pinterest
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Support */}
           <div>
-            <h3 className="text-xs font-semibold tracking-widest uppercase text-card-foreground mb-4">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground">
               Support
             </h3>
             <ul className="flex flex-col gap-2.5">
-              <li>
-                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
-              </li>
-              <li>
-                <Link href="/shipping-returns" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Shipping & Returns</Link>
-              </li>
-              <li>
-                <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms</Link>
-              </li>
+              {[
+                ["Contact", "/contact"],
+                ["Shipping & Returns", "/shipping-returns"],
+                ["Privacy Policy", "/privacy-policy"],
+                ["Terms", "/terms"],
+              ].map(([label, href]) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 md:flex-row">
+          <p className="text-xs text-primary-foreground/50">
             2026 Ekana Cosmetics. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-5">
             <a
               href="https://instagram.com"
               rel="noreferrer"
               target="_blank"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs text-primary-foreground/60 transition hover:text-primary-foreground"
               aria-label="Instagram"
             >
               <Instagram className="h-4 w-4" />
@@ -152,14 +130,14 @@ export function SiteFooter() {
               href="https://pinterest.com"
               rel="noreferrer"
               target="_blank"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs text-primary-foreground/60 transition hover:text-primary-foreground"
             >
               Pinterest
             </a>
-            <Link href="/privacy-policy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/privacy-policy" className="text-xs text-primary-foreground/60 transition hover:text-primary-foreground">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/terms" className="text-xs text-primary-foreground/60 transition hover:text-primary-foreground">
               Terms of Service
             </Link>
           </div>
