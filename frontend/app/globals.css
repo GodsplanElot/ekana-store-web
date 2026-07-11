@@ -43,6 +43,11 @@
     --sidebar-accent-foreground: 24 25% 16%;
     --sidebar-border: 30 20% 82%;
     --sidebar-ring: 346 43% 39%;
+    --page-gradient-start: 36 52% 97%;
+    --page-gradient-mid: 35 48% 96%;
+    --page-gradient-end: 34 42% 92%;
+    --page-grid: 24 25% 12%;
+    color-scheme: light;
   }
 
   .dark {
@@ -78,6 +83,11 @@
     --sidebar-accent-foreground: 36 31% 92%;
     --sidebar-border: 24 13% 22%;
     --sidebar-ring: 348 45% 56%;
+    --page-gradient-start: 22 20% 8%;
+    --page-gradient-mid: 23 18% 10%;
+    --page-gradient-end: 18 18% 6%;
+    --page-grid: 36 31% 92%;
+    color-scheme: dark;
   }
 }
 
@@ -93,9 +103,10 @@
   body {
     @apply bg-background text-foreground;
     background-image:
-      linear-gradient(180deg, hsl(36 52% 97%) 0%, hsl(35 48% 96%) 38%, hsl(34 42% 92%) 100%),
-      repeating-linear-gradient(90deg, hsl(24 25% 12% / 0.024) 0 1px, transparent 1px 84px);
+      linear-gradient(180deg, hsl(var(--page-gradient-start)) 0%, hsl(var(--page-gradient-mid)) 38%, hsl(var(--page-gradient-end)) 100%),
+      repeating-linear-gradient(90deg, hsl(var(--page-grid) / 0.024) 0 1px, transparent 1px 84px);
     font-feature-settings: "liga" 1, "kern" 1;
+    transition: background-color 180ms ease, color 180ms ease;
   }
 
   ::selection {
