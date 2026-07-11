@@ -5,7 +5,7 @@ import { BrandLogo } from "@/components/brand-logo";
 
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-foreground/10 bg-[#211814] text-primary-foreground">
+    <footer className="relative overflow-hidden border-t border-[hsl(var(--brand-panel-border)/0.18)] bg-[hsl(var(--brand-panel))] text-[hsl(var(--brand-panel-foreground))] transition-colors">
       <BrandLogo
         variant="watermark"
         sizes="520px"
@@ -24,16 +24,16 @@ export function SiteFooter() {
                 surface="ink"
                 sizes="48px"
                 markClassName="size-12"
-                textClassName="[&_span:first-child]:text-primary-foreground [&_span:last-child]:text-primary-foreground/60"
+                textClassName="[&_span:first-child]:text-[hsl(var(--brand-panel-foreground))] [&_span:last-child]:text-[hsl(var(--brand-panel-muted))]"
               />
             </Link>
-            <p className="mt-5 max-w-xs text-sm leading-7 text-primary-foreground/60">
+            <p className="mt-5 max-w-xs text-sm leading-7 text-[hsl(var(--brand-panel-muted))]">
               Glosses, liners, and lashes made to feel luxurious, effortless, and authentic.
             </p>
           </div>
 
           <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[hsl(var(--brand-panel-foreground))]">
               Shop
             </h3>
             <ul className="flex flex-col gap-2.5">
@@ -47,7 +47,7 @@ export function SiteFooter() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground"
+                    className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]"
                   >
                     {label}
                   </Link>
@@ -57,7 +57,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[hsl(var(--brand-panel-foreground))]">
               Company
             </h3>
             <ul className="flex flex-col gap-2.5">
@@ -69,19 +69,19 @@ export function SiteFooter() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground"
+                    className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]"
                   >
                     {label}
                   </Link>
                 </li>
               ))}
               <li>
-                <a href="https://instagram.com" rel="noreferrer" target="_blank" className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground">
+                <a href="https://instagram.com" rel="noreferrer" target="_blank" className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
                   Instagram
                 </a>
               </li>
               <li>
-                <a href="https://pinterest.com" rel="noreferrer" target="_blank" className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground">
+                <a href="https://pinterest.com" rel="noreferrer" target="_blank" className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
                   Pinterest
                 </a>
               </li>
@@ -89,7 +89,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[hsl(var(--brand-panel-foreground))]">
               Support
             </h3>
             <ul className="flex flex-col gap-2.5">
@@ -102,7 +102,7 @@ export function SiteFooter() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-primary-foreground/60 transition hover:text-primary-foreground"
+                    className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]"
                   >
                     {label}
                   </Link>
@@ -112,8 +112,8 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 md:flex-row">
-          <p className="text-xs text-primary-foreground/50">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[hsl(var(--brand-panel-border)/0.22)] pt-8 md:flex-row">
+          <p className="text-xs text-[hsl(var(--brand-panel-muted))]">
             2026 Ekana Cosmetics. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-5">
@@ -121,7 +121,7 @@ export function SiteFooter() {
               href="https://instagram.com"
               rel="noreferrer"
               target="_blank"
-              className="text-xs text-primary-foreground/60 transition hover:text-primary-foreground"
+              className="text-xs text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]"
               aria-label="Instagram"
             >
               <Instagram className="h-4 w-4" />
@@ -130,14 +130,14 @@ export function SiteFooter() {
               href="https://pinterest.com"
               rel="noreferrer"
               target="_blank"
-              className="text-xs text-primary-foreground/60 transition hover:text-primary-foreground"
+              className="text-xs text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]"
             >
               Pinterest
             </a>
-            <Link href="/privacy-policy" className="text-xs text-primary-foreground/60 transition hover:text-primary-foreground">
+            <Link href="/privacy-policy" className="text-xs text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-xs text-primary-foreground/60 transition hover:text-primary-foreground">
+            <Link href="/terms" className="text-xs text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
               Terms of Service
             </Link>
           </div>

@@ -14,7 +14,7 @@ export function NewsletterSection() {
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
-        <div className="relative overflow-hidden rounded-md bg-[#211814] px-6 py-12 text-center text-primary-foreground shadow-[0_28px_90px_rgba(33,24,20,0.24)] md:px-12 md:py-16">
+        <div className="relative overflow-hidden rounded-md border border-[hsl(var(--brand-panel-border)/0.18)] bg-[hsl(var(--brand-panel))] px-6 py-12 text-center text-[hsl(var(--brand-panel-foreground))] shadow-[0_28px_90px_rgba(33,24,20,0.24)] transition-colors md:px-12 md:py-16 dark:shadow-[0_28px_90px_rgba(0,0,0,0.34)]">
           <BrandLogo
             variant="watermark"
             sizes="420px"
@@ -27,10 +27,10 @@ export function NewsletterSection() {
               sizes="56px"
               className="mx-auto mb-5 size-16"
             />
-            <h2 className="font-serif text-4xl text-primary-foreground md:text-5xl">
+            <h2 className="font-serif text-4xl text-[hsl(var(--brand-panel-foreground))] md:text-5xl">
               Join the Ekana Circle
             </h2>
-            <p className="mx-auto mb-8 mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/70">
+            <p className="mx-auto mb-8 mt-4 max-w-md text-sm leading-relaxed text-[hsl(var(--brand-panel-muted))]">
               Be the first to know about new shades, restocks, and exclusive launches.
             </p>
             <form
@@ -65,20 +65,20 @@ export function NewsletterSection() {
                 name="email"
                 type="email"
                 placeholder="Your email address"
-                className="border-white/20 bg-white/10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-white/30"
+                className="border-[hsl(var(--brand-panel-border)/0.28)] bg-[hsl(var(--brand-panel-foreground)/0.08)] text-[hsl(var(--brand-panel-foreground))] placeholder:text-[hsl(var(--brand-panel-muted))] focus-visible:ring-[hsl(var(--brand-panel-soft)/0.42)]"
                 aria-label="Email address"
               />
               <Button
                 type="submit"
                 variant="secondary"
-                className="w-full flex-shrink-0 bg-primary-foreground text-foreground hover:bg-primary-foreground/90 sm:w-auto"
+                className="w-full flex-shrink-0 bg-[hsl(var(--brand-panel-foreground))] text-[hsl(var(--brand-panel))] shadow-[0_14px_30px_rgba(255,244,232,0.14)] hover:bg-[hsl(var(--brand-panel-foreground)/0.9)] sm:w-auto"
                 disabled={status === "loading"}
               >
                 {status === "loading" ? "Subscribing" : "Subscribe"}
               </Button>
             </form>
             {message && (
-              <p className="mt-4 text-sm text-primary-foreground/80">{message}</p>
+              <p className="mt-4 text-sm text-[hsl(var(--brand-panel-muted))]">{message}</p>
             )}
           </div>
         </div>
