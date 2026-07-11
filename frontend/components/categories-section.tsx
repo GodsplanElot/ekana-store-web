@@ -8,25 +8,21 @@ const categoryData = [
     name: "Glosses",
     slug: "Glosses",
     image: "/images/product-7.jpg",
-    count: 5,
   },
   {
     name: "Lip Liners",
     slug: "Lip Liners",
     image: "/images/product-5.jpg",
-    count: 3,
   },
   {
     name: "Lashes",
     slug: "Lashes",
     image: "/images/product-8.jpg",
-    count: 1,
   },
   {
     name: "Lash Trays",
     slug: "Lash Trays",
     image: "/images/product-6.jpg",
-    count: 1,
   },
 ];
 
@@ -71,7 +67,7 @@ export function CategoriesSection() {
                   {category.name}
                 </h3>
                 <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-background/80">
-                  {category.count} products
+                  Shop collection
                 </p>
               </div>
             </Link>
