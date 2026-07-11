@@ -85,13 +85,13 @@ export function HeroSection() {
             </div>
             <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4 md:bottom-7 md:left-7 md:right-7">
               <div>
-                <BrandLogo
+                {/*                 <BrandLogo
                   variant="lockup"
                   surface="ink"
                   sizes="46px"
                   markClassName="size-12"
                   textClassName="[&_span:first-child]:text-primary-foreground [&_span:last-child]:text-primary-foreground/65"
-                />
+                /> */}
               </div>
               <p className="hidden max-w-[210px] text-right text-xs leading-5 text-white/80 sm:block">
                 A mobile-first beauty counter for shades, restocks, and daily essentials.
