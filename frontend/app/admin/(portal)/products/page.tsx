@@ -3,7 +3,7 @@ import { Pencil, Plus, Search } from "lucide-react"
 import { DeactivateProductButton } from "@/components/admin/deactivate-product-button"
 import { formatNaira } from "@/lib/money"
 import { requireStaff, staffHasRole } from "@/lib/server/require-staff"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 
 type ProductRow = {
   id: string
@@ -25,8 +25,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const staff = await requireStaff()
   const canEdit = staffHasRole(staff, ["owner", "admin", "inventory"])
   const filters = await searchParams
-  const supabase = createSupabaseAdmin()
-  const { data, error } = supabase ? await supabase.from("products").select("id,name,slug,category,price,image_url,inventory_count,is_active,is_featured").order("created_at", { ascending: false }) : { data: null, error: new Error("Supabase is not configured") }
+  const supabase = await createSupabaseServerClient()
+  const { data, error } = await supabase.from("products").select("id,name,slug,category,price,image_url,inventory_count,is_active,is_featured").order("created_at", { ascending: false })
   const query = filters.q?.trim().toLowerCase() ?? ""
   const products = ((data ?? []) as ProductRow[]).filter((product) => {
     const matchesQuery = !query || product.name.toLowerCase().includes(query) || product.slug.toLowerCase().includes(query)

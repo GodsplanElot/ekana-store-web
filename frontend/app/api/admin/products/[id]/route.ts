@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { writeAdminAuditLog } from "@/lib/server/admin-audit"
 import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { productMutationSchema } from "@/lib/validation/product"
 
 const productRoles = ["owner", "admin", "inventory"] as const
@@ -20,8 +20,7 @@ export async function PATCH(request: Request, { params }: ProductRouteProps) {
   }
 
   const { id } = await params
-  const supabase = createSupabaseAdmin()
-  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
+  const supabase = await createSupabaseServerClient()
 
   const product = parsed.data
   const { error } = await supabase.from("products").update({
@@ -56,8 +55,7 @@ export async function DELETE(_: Request, { params }: ProductRouteProps) {
   }
 
   const { id } = await params
-  const supabase = createSupabaseAdmin()
-  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
+  const supabase = await createSupabaseServerClient()
 
   const { error } = await supabase.from("products").update({
     is_active: false,
