@@ -1,5 +1,5 @@
 import { products as seedProducts, type Product, type ProductCategory } from "@/lib/products"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabasePublicClient } from "@/lib/supabase/public"
 
 interface SupabaseProductRow {
   id: string
@@ -50,7 +50,7 @@ export function mapSupabaseProduct(row: SupabaseProductRow): Product {
 }
 
 export async function getCatalogProducts() {
-  const supabase = createSupabaseAdmin()
+  const supabase = createSupabasePublicClient()
   if (!supabase) return seedProducts
 
   const { data, error } = await supabase

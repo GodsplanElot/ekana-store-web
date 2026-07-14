@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { writeAdminAuditLog } from "@/lib/server/admin-audit"
+import { getConfiguredAppOrigin } from "@/lib/server/app-url"
 import { getCurrentStaff, staffHasRole, staffRoles } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 
@@ -24,10 +25,12 @@ export async function POST(request: Request) {
 
   const supabase = createSupabaseAdmin()
   if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
+  const appOrigin = getConfiguredAppOrigin()
+  if (!appOrigin) return NextResponse.json({ error: "Application URL is not configured" }, { status: 503 })
 
   const email = parsed.data.email.toLowerCase()
   const { data: invite, error: inviteError } = await supabase.auth.admin.inviteUserByEmail(email, {
-    redirectTo: new URL("/auth/callback?next=/admin/set-password", request.url).toString(),
+    redirectTo: new URL("/auth/callback?next=/admin/set-password", appOrigin).toString(),
     data: { display_name: parsed.data.displayName },
   })
   if (inviteError || !invite.user) {

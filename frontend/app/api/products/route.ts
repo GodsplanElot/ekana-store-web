@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server"
 import { products as seedProducts } from "@/lib/products"
 import { mapSupabaseProduct } from "@/lib/server/products"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabasePublicClient } from "@/lib/supabase/public"
 
 export async function GET() {
-  const supabase = createSupabaseAdmin()
+  const supabase = createSupabasePublicClient()
 
   if (!supabase) {
     return NextResponse.json({ products: seedProducts, source: "seed" })

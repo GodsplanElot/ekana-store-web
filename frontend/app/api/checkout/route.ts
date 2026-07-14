@@ -3,10 +3,12 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import { formatNaira } from "@/lib/money"
 import { products } from "@/lib/products"
+import { getConfiguredAppOrigin } from "@/lib/server/app-url"
 import { sendOrderEmails } from "@/lib/server/email"
 import { initializePaystackPayment } from "@/lib/server/paystack"
 import { mapSupabaseProduct } from "@/lib/server/products"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabasePublicClient } from "@/lib/supabase/public"
 
 const checkoutSchema = z.object({
   customer: z.object({
@@ -34,10 +36,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid checkout details." }, { status: 400 })
   }
 
-  const supabase = createSupabaseAdmin()
+  const appOrigin = getConfiguredAppOrigin()
+  if (!appOrigin) {
+    return NextResponse.json(
+      { error: "Checkout is temporarily unavailable." },
+      { status: 503 }
+    )
+  }
+
+  const publicSupabase = createSupabasePublicClient()
+  const adminSupabase = createSupabaseAdmin()
   const productIds = parsed.data.items.map((item) => item.productId)
-  const catalogProducts = supabase
-    ? await supabase
+  const catalogProducts = publicSupabase
+    ? await publicSupabase
         .from("products")
         .select("*")
         .in("id", productIds)
@@ -73,11 +84,13 @@ export async function POST(request: Request) {
   const total = subtotal + deliveryFee
   const reference = `ekana_${Date.now()}_${randomUUID().slice(0, 8)}`
   const customerName = `${parsed.data.customer.firstName} ${parsed.data.customer.lastName}`
-  const origin = request.headers.get("origin") ?? process.env.NEXT_PUBLIC_APP_URL ?? ""
-  const callbackUrl = `${origin}/checkout?reference=${encodeURIComponent(reference)}`
+  const callbackUrl = new URL(
+    `/checkout?reference=${encodeURIComponent(reference)}`,
+    appOrigin
+  ).toString()
 
-  if (supabase) {
-    const { error } = await supabase.from("orders").insert({
+  if (adminSupabase) {
+    const { error } = await adminSupabase.from("orders").insert({
       reference,
       customer_email: parsed.data.customer.email,
       customer_name: customerName,
