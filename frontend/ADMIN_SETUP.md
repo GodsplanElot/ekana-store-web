@@ -8,11 +8,12 @@ Configure these values locally and in the Vercel project:
 
 ```text
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
 ```
 
-The service-role key is server-only. Never prefix it with `NEXT_PUBLIC_` or expose it to browser code.
+The secret key is server-only and bypasses Row Level Security. Never prefix it with
+`NEXT_PUBLIC_`, expose it to browser code, or commit it to Git.
 
 ## Apply the database migrations
 
@@ -22,20 +23,39 @@ Run the SQL files in order through the Supabase SQL editor:
 2. `db/migrations/0002_staff_users.sql`
 3. `db/migrations/0003_product_images.sql`
 4. `db/migrations/0004_admin_audit_logs.sql`
+5. `db/migrations/0005_security_foundation.sql`
+
+Then, from `frontend`, run:
+
+```powershell
+pnpm supabase:verify
+```
+
+Every verifier check must pass before adding real customer or order data.
 
 ## Create the first owner
 
 1. In Supabase, open **Authentication > Users**.
-2. Create the staff user with email and password.
+2. Create and confirm the staff user with a strong password.
 3. Run the following SQL, replacing the email and display name:
 
 ```sql
-insert into public.staff_users (user_id, email, display_name, role)
-select id, email, 'Store Owner', 'owner'
+insert into public.staff_users (user_id, email, display_name, role, is_active)
+select id, lower(email), 'Store Owner', 'owner', true
 from auth.users
 where lower(email) = lower('owner@example.com');
 ```
 
 The statement should report one inserted row. If it inserts no rows, the Auth user email does not match.
 
-Public staff registration should remain disabled. Additional staff accounts must be created by an owner or directly in the Supabase dashboard until the staff-management UI is implemented.
+Public staff registration should remain disabled. After bootstrapping the first
+owner, an owner should invite additional staff through `/admin/staff`. Use the
+Supabase dashboard only for initial bootstrap or account recovery.
+
+## Local authentication test
+
+Set the Supabase Auth Site URL to `http://localhost:3000` and allow
+`http://localhost:3000/auth/callback`. Start the app, visit
+`http://localhost:3000/admin/login`, and sign in with the confirmed Auth user.
+Admin access requires both a valid Supabase session and the matching active
+`staff_users` row. There is no development authentication bypass.

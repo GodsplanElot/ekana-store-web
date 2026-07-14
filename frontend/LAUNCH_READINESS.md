@@ -24,7 +24,8 @@ Use this checklist to track the remaining work needed to make the app production
 ## 3. Serverless Backend & Supabase
 
 - [ ] Create or configure the Supabase project.
-- [ ] Apply `db/migrations/0001_initial_backend.sql` in Supabase.
+- [ ] Apply `db/migrations/0001_initial_backend.sql` through `db/migrations/0005_security_foundation.sql` in filename order.
+- [ ] From `frontend`, run `pnpm supabase:verify` and confirm every check passes.
 - [ ] Add production products into the `products` table.
 - [ ] Confirm `GET /api/products` returns Supabase products when credentials are configured.
 - [ ] Confirm checkout validates active products, prices, and inventory against Supabase.
@@ -36,8 +37,8 @@ Required variables:
 
 ```txt
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
 DATABASE_URL=
 ```
 
@@ -134,8 +135,8 @@ Core production variables:
 ```txt
 NEXT_PUBLIC_APP_URL=
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
 PAYSTACK_SECRET_KEY=
 RESEND_API_KEY=
 ```
