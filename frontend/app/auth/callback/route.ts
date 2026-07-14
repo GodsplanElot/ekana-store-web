@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server"
+import { getSafeAdminPath } from "@/lib/auth/safe-admin-path"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
-
-function safeNextPath(value: string | null) {
-  return value?.startsWith("/") && !value.startsWith("//") ? value : "/admin"
-}
 
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const code = url.searchParams.get("code")
-  const next = safeNextPath(url.searchParams.get("next"))
+  const next = getSafeAdminPath(url.searchParams.get("next"))
 
   if (code) {
     const supabase = await createSupabaseServerClient()

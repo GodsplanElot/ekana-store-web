@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { LoginForm } from "@/components/admin/login-form";
+import { getSafeAdminPath } from "@/lib/auth/safe-admin-path";
 
 export const metadata: Metadata = {
   title: "Staff sign in | Ekana Cosmetics",
@@ -14,7 +15,7 @@ type LoginPageProps = {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { error, next } = await searchParams;
-  const nextPath = next?.startsWith("/") && !next.startsWith("//") ? next : "/admin";
+  const nextPath = getSafeAdminPath(next);
 
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-[#f4efe7] px-5 py-12 text-stone-950">

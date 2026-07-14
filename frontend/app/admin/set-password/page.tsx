@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { SetPasswordForm } from "@/components/admin/set-password-form";
+import { requireStaff } from "@/lib/server/require-staff";
 
 export const metadata: Metadata = { title: "Set staff password | Ekana Cosmetics" };
 
-export default function SetPasswordPage() {
+export default async function SetPasswordPage() {
+  await requireStaff();
+
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-[#f4efe7] px-5 py-12 text-stone-950">
       <BrandLogo
