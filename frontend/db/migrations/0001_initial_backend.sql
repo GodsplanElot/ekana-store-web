@@ -16,6 +16,8 @@ create table if not exists products (
   updated_at timestamptz not null default now()
 );
 
+alter table public.products enable row level security;
+
 create table if not exists orders (
   id uuid primary key default gen_random_uuid(),
   reference text not null unique,
@@ -36,9 +38,13 @@ create table if not exists orders (
   updated_at timestamptz not null default now()
 );
 
+alter table public.orders enable row level security;
+
 create table if not exists newsletter_subscribers (
   id uuid primary key default gen_random_uuid(),
   email text not null unique,
   source text not null default 'website',
   created_at timestamptz not null default now()
 );
+
+alter table public.newsletter_subscribers enable row level security;
