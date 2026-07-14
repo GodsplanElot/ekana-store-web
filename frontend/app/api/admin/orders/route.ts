@@ -3,6 +3,7 @@ import { z } from "zod"
 import { writeAdminAuditLog } from "@/lib/server/admin-audit"
 import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 
 const paymentStatuses = ["pending", "paid", "failed", "refunded"] as const
 const fulfillmentStatuses = ["new", "processing", "shipped", "delivered", "cancelled"] as const
@@ -26,8 +27,7 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const supabase = createSupabaseAdmin()
-  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
+  const supabase = await createSupabaseServerClient()
 
   const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
