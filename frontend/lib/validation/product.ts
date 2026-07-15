@@ -1,11 +1,17 @@
 import { z } from "zod"
+import { normalizeProductCategory } from "@/lib/catalog"
 
 export const productMutationSchema = z.object({
   id: z.string().min(1).optional(),
   slug: z.string().trim().min(2).max(120).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   name: z.string().trim().min(2).max(160),
   description: z.string().trim().min(10).max(3000),
-  category: z.string().trim().min(2).max(120),
+  category: z
+    .string()
+    .trim()
+    .min(2)
+    .max(120)
+    .transform(normalizeProductCategory),
   price: z.number().int().min(0).max(100000000),
   imageUrl: z.string().trim().min(1).max(2000),
   shade: z.string().trim().max(120).optional(),

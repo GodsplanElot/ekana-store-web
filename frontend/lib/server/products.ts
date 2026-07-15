@@ -1,4 +1,7 @@
-import type { Product } from "@/lib/catalog"
+import {
+  normalizeProductCategory,
+  type Product,
+} from "@/lib/catalog"
 import { createSupabasePublicClient } from "@/lib/supabase/public"
 
 interface SupabaseProductRow {
@@ -25,7 +28,7 @@ export function mapSupabaseProduct(row: SupabaseProductRow): Product {
     description: row.description,
     price: row.price,
     image: row.image_url,
-    category: row.category,
+    category: normalizeProductCategory(row.category),
     shade: row.shade ?? undefined,
     details: row.features ?? [],
     inStock: row.inventory_count > 0,
@@ -38,7 +41,9 @@ export function mapSupabaseProduct(row: SupabaseProductRow): Product {
 
 export async function getCatalogProducts() {
   const supabase = createSupabasePublicClient()
-  if (!supabase) return []
+  if (!supabase) {
+    throw new Error("Supabase catalogue service is not configured.")
+  }
 
   const { data, error } = await supabase
     .from("products")
@@ -47,8 +52,7 @@ export async function getCatalogProducts() {
     .order("created_at", { ascending: false })
 
   if (error) {
-    console.error("Supabase catalogue query failed:", error.message)
-    return []
+    throw new Error("Supabase catalogue query failed.", { cause: error })
   }
 
   return (data ?? []).map((row) =>

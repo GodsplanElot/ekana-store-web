@@ -2,14 +2,23 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/brand-logo";
-import { getProductCategories, type Product } from "@/lib/catalog";
+import {
+  getProductCategories,
+  normalizeProductCategory,
+  type Product,
+} from "@/lib/catalog";
 
 export function CategoriesSection({ products }: { products: Product[] }) {
-  const categoryData = getProductCategories(products).map((category) => ({
-    name: category,
-    slug: category,
-    image: products.find((product) => product.category === category)!.image,
-  }));
+  const categoryData = getProductCategories(products).flatMap((category) => {
+    const product = products.find(
+      (candidate) =>
+        normalizeProductCategory(candidate.category) === category
+    );
+
+    return product
+      ? [{ name: category, slug: category, image: product.image }]
+      : [];
+  });
   return (
     <section className="relative overflow-hidden border-y border-foreground/10 bg-card py-16 lg:py-24">
       <BrandLogo

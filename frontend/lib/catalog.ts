@@ -15,11 +15,15 @@ export interface Product {
   active: boolean
 }
 
+export function normalizeProductCategory(category: string) {
+  return category.trim().replace(/\s+/g, " ")
+}
+
 export function getProductCategories(products: readonly Product[]) {
   return Array.from(
     new Set(
       products
-        .map((product) => product.category.trim())
+        .map((product) => normalizeProductCategory(product.category))
         .filter(Boolean)
     )
   ).sort((left, right) => left.localeCompare(right))

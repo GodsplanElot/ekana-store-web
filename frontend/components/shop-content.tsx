@@ -6,7 +6,11 @@ import { useSearchParams } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
-import { getProductCategories, type Product } from "@/lib/catalog";
+import {
+  getProductCategories,
+  normalizeProductCategory,
+  type Product,
+} from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 
 export function ShopContent({ products }: { products: Product[] }) {
@@ -19,7 +23,10 @@ export function ShopContent({ products }: { products: Product[] }) {
   const filteredProducts =
     activeCategory === "All"
       ? products
-      : products.filter((p) => p.category === activeCategory);
+      : products.filter(
+          (product) =>
+            normalizeProductCategory(product.category) === activeCategory
+        );
 
   return (
     <section className="relative overflow-hidden py-10 lg:py-14">

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Pencil, Plus, Search } from "lucide-react"
 import { DeactivateProductButton } from "@/components/admin/deactivate-product-button"
+import { normalizeProductCategory } from "@/lib/catalog"
 import { formatNaira } from "@/lib/money"
 import { requireStaff, staffHasRole } from "@/lib/server/require-staff"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
@@ -30,11 +31,15 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const query = filters.q?.trim().toLowerCase() ?? ""
   const allProducts = (data ?? []) as ProductRow[]
   const categories = Array.from(
-    new Set(allProducts.map((product) => product.category.trim()).filter(Boolean))
+    new Set(
+      allProducts
+        .map((product) => normalizeProductCategory(product.category))
+        .filter(Boolean)
+    )
   ).sort((left, right) => left.localeCompare(right))
   const products = allProducts.filter((product) => {
     const matchesQuery = !query || product.name.toLowerCase().includes(query) || product.slug.toLowerCase().includes(query)
-    const matchesCategory = !filters.category || filters.category === "all" || product.category === filters.category
+    const matchesCategory = !filters.category || filters.category === "all" || normalizeProductCategory(product.category) === filters.category
     const matchesStatus = !filters.status || filters.status === "all" || (filters.status === "active" ? product.is_active : !product.is_active)
     return matchesQuery && matchesCategory && matchesStatus
   })
@@ -66,7 +71,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <p className={`text-sm ${product.inventory_count <= 5 ? "font-semibold text-amber-800" : "text-stone-600"}`}>{product.inventory_count} units</p>
               <div className="flex justify-end gap-2">{canEdit ? <><Link aria-label={`Edit ${product.name}`} className="grid size-9 place-items-center border border-stone-900/15 text-stone-600 transition hover:border-stone-950 hover:text-stone-950" href={`/admin/products/${product.id}/edit`}><Pencil className="size-4" /></Link>{product.is_active ? <DeactivateProductButton id={product.id} name={product.name} /> : null}</> : <span className="text-xs text-stone-400">Read only</span>}</div>
             </article>
-          )) : <div className="px-5 py-16 text-center"><p className="font-serif text-2xl">No products found</p><p className="mt-2 text-sm text-stone-500">Adjust the filters or create a new product.</p></div>}
+          )) : error ? null : <div className="px-5 py-16 text-center"><p className="font-serif text-2xl">No products found</p><p className="mt-2 text-sm text-stone-500">Adjust the filters or create a new product.</p></div>}
         </div>
       </div>
     </section>
