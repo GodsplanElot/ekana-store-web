@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart-context";
 import { trackAddToCart } from "@/lib/analytics";
 import { formatNaira } from "@/lib/money";
-import type { Product } from "@/lib/products";
+import type { Product } from "@/lib/catalog";
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +18,11 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
+  const badge = product.isRestocked
+    ? "Restocked"
+    : product.isFeatured
+      ? "Featured"
+      : null;
 
   return (
     <article className="group relative flex flex-col">
@@ -33,12 +38,9 @@ export function ProductCard({ product }: ProductCardProps) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
         <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(33,24,20,0)_0%,rgba(33,24,20,0.32)_100%)] opacity-0 transition group-hover:opacity-100" />
-        {product.badge && (
-          <Badge
-            variant={product.badge === "Sale" ? "destructive" : "default"}
-            className="absolute left-3 top-3"
-          >
-            {product.badge}
+        {badge && (
+          <Badge className="absolute left-3 top-3">
+            {badge}
           </Badge>
         )}
         <BrandLogo
@@ -70,14 +72,19 @@ export function ProductCard({ product }: ProductCardProps) {
           variant="outline"
           size="sm"
           className="mt-3 w-full border-primary/20 bg-background/70 opacity-100 transition md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
+          disabled={!product.inStock}
           onClick={() => {
             addItem(product);
             trackAddToCart(product);
           }}
-          aria-label={`Add ${product.name} to cart`}
+          aria-label={
+            product.inStock
+              ? `Add ${product.name} to cart`
+              : `${product.name} is out of stock`
+          }
         >
           <ShoppingBag className="mr-2 h-4 w-4" />
-          Add to Cart
+          {product.inStock ? "Add to Cart" : "Out of Stock"}
         </Button>
       </div>
     </article>

@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { formatNaira } from "@/lib/money"
-import { products } from "@/lib/products"
 import { getConfiguredAppOrigin } from "@/lib/server/app-url"
 import { sendOrderEmails } from "@/lib/server/email"
 import { initializePaystackPayment } from "@/lib/server/paystack"
@@ -46,17 +45,31 @@ export async function POST(request: Request) {
 
   const publicSupabase = createSupabasePublicClient()
   const adminSupabase = createSupabaseAdmin()
+
+  if (!publicSupabase || !adminSupabase) {
+    return NextResponse.json(
+      { error: "Checkout is temporarily unavailable." },
+      { status: 503 }
+    )
+  }
+
   const productIds = parsed.data.items.map((item) => item.productId)
-  const catalogProducts = publicSupabase
-    ? await publicSupabase
-        .from("products")
-        .select("*")
-        .in("id", productIds)
-        .eq("is_active", true)
-        .then(({ data, error }) =>
-          error || !data ? [] : data.map((product) => mapSupabaseProduct(product))
-        )
-    : products
+  const { data: productRows, error: productError } = await publicSupabase
+    .from("products")
+    .select("*")
+    .in("id", productIds)
+    .eq("is_active", true)
+
+  if (productError || !productRows) {
+    return NextResponse.json(
+      { error: "Checkout is temporarily unavailable." },
+      { status: 503 }
+    )
+  }
+
+  const catalogProducts = productRows.map((product) =>
+    mapSupabaseProduct(product)
+  )
 
   const resolvedItems = parsed.data.items.map((item) => {
     const product = catalogProducts.find((p) => p.id === item.productId)
@@ -89,27 +102,28 @@ export async function POST(request: Request) {
     appOrigin
   ).toString()
 
-  if (adminSupabase) {
-    const { error } = await adminSupabase.from("orders").insert({
-      reference,
-      customer_email: parsed.data.customer.email,
-      customer_name: customerName,
-      customer_phone: parsed.data.customer.phone,
-      delivery_address: parsed.data.customer.address,
-      delivery_city: parsed.data.customer.city,
-      order_notes: parsed.data.customer.notes,
-      subtotal,
-      delivery_fee: deliveryFee,
-      total,
-      payment_status: "pending",
-      fulfillment_status: "new",
-      paystack_reference: reference,
-      items,
-    })
+  const { error: orderError } = await adminSupabase.from("orders").insert({
+    reference,
+    customer_email: parsed.data.customer.email,
+    customer_name: customerName,
+    customer_phone: parsed.data.customer.phone,
+    delivery_address: parsed.data.customer.address,
+    delivery_city: parsed.data.customer.city,
+    order_notes: parsed.data.customer.notes,
+    subtotal,
+    delivery_fee: deliveryFee,
+    total,
+    payment_status: "pending",
+    fulfillment_status: "new",
+    paystack_reference: reference,
+    items,
+  })
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+  if (orderError) {
+    return NextResponse.json(
+      { error: "Order could not be created." },
+      { status: 500 }
+    )
   }
 
   const payment = await initializePaystackPayment({

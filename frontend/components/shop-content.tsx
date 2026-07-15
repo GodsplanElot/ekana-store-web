@@ -6,11 +6,12 @@ import { useSearchParams } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
+import { getProductCategories, type Product } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
-import { categories, type Product } from "@/lib/products";
 
 export function ShopContent({ products }: { products: Product[] }) {
   const searchParams = useSearchParams();
+  const categories = ["All", ...getProductCategories(products)];
   const categoryParam = searchParams.get("category");
   const validCategory = categories.find((category) => category === categoryParam);
   const activeCategory = validCategory ?? "All";
@@ -70,7 +71,9 @@ export function ShopContent({ products }: { products: Product[] }) {
         {filteredProducts.length === 0 && (
           <div className="py-16 text-center">
             <p className="text-muted-foreground">
-              No products found in this category.
+              {products.length === 0
+                ? "No products are available yet."
+                : "No products found in this category."}
             </p>
           </div>
         )}

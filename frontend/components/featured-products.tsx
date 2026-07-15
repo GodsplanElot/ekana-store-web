@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductCard } from "@/components/product-card";
-import type { Product } from "@/lib/products";
+import type { Product } from "@/lib/catalog";
 
 export function FeaturedProducts({ products }: { products: Product[] }) {
   const featured = products
@@ -41,11 +41,22 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-          {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {featured.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            {featured.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="border border-dashed border-foreground/15 bg-background/50 px-6 py-14 text-center">
+            <p className="font-serif text-2xl text-foreground">
+              No featured products yet
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Products marked as featured or restocked in the admin will appear here.
+            </p>
+          </div>
+        )}
 
         <div className="mt-8 flex justify-center md:hidden">
           <Link

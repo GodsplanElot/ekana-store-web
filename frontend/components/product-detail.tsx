@@ -9,7 +9,6 @@ import {
   RotateCcw,
   Shield,
   ShoppingBag,
-  Star,
   Truck,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -22,7 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { trackAddToCart, trackProductView } from "@/lib/analytics";
 import { useCart } from "@/lib/cart-context";
 import { formatNaira } from "@/lib/money";
-import type { Product } from "@/lib/products";
+import type { Product } from "@/lib/catalog";
 
 interface ProductDetailProps {
   product: Product;
@@ -32,15 +31,20 @@ interface ProductDetailProps {
 export function ProductDetail({ product, relatedProducts }: ProductDetailProps) {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const badge = product.isRestocked
+    ? "Restocked"
+    : product.isFeatured
+      ? "Featured"
+      : null;
 
   useEffect(() => {
     trackProductView(product);
   }, [product]);
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addItem(product);
-    }
+    if (!product.inStock) return;
+
+    addItem(product, quantity);
     trackAddToCart(product, quantity);
   };
 
@@ -82,12 +86,9 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
             <div className="absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(180deg,rgba(33,24,20,0)_0%,rgba(33,24,20,0.36)_100%)]" />
-            {product.badge && (
-              <Badge
-                variant={product.badge === "Sale" ? "destructive" : "default"}
-                className="absolute left-4 top-4"
-              >
-                {product.badge}
+            {badge && (
+              <Badge className="absolute left-4 top-4">
+                {badge}
               </Badge>
             )}
             <BrandLogo
@@ -109,27 +110,14 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               {product.name}
             </h1>
 
-            <div className="mb-4 flex items-center gap-2">
-              <div className="flex items-center gap-0.5" aria-label={`Rated ${product.rating} out of 5 stars`}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${
-                      i < Math.floor(product.rating)
-                        ? "fill-primary text-primary"
-                        : "fill-muted text-muted"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {product.rating} ({product.reviews} reviews)
-              </span>
-            </div>
-
             <div className="mb-6 flex items-baseline gap-3">
               <span className="text-2xl font-semibold text-foreground">
                 {formatNaira(product.price)}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {product.inStock
+                  ? `${product.inventoryCount} in stock`
+                  : "Out of stock"}
               </span>
             </div>
 
@@ -143,6 +131,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6"
+                  disabled={!product.inStock || quantity <= 1}
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   aria-label="Decrease quantity"
                 >
@@ -155,7 +144,12 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6"
-                  onClick={() => setQuantity(quantity + 1)}
+                  disabled={
+                    !product.inStock || quantity >= product.inventoryCount
+                  }
+                  onClick={() =>
+                    setQuantity(Math.min(product.inventoryCount, quantity + 1))
+                  }
                   aria-label="Increase quantity"
                 >
                   <Plus className="h-3.5 w-3.5" />
@@ -164,31 +158,35 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               <Button
                 size="lg"
                 className="flex-1 bg-primary text-primary-foreground shadow-[0_18px_34px_rgba(107,57,72,0.22)] hover:bg-primary/90"
+                disabled={!product.inStock}
                 onClick={handleAddToCart}
               >
                 <ShoppingBag className="mr-2 h-4 w-4" />
-                Add to Cart
+                {product.inStock ? "Add to Cart" : "Out of Stock"}
               </Button>
             </div>
 
-            <Separator className="my-6" />
-
-            <div className="mb-6">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
-                Details
-              </h3>
-              <ul className="flex flex-col gap-2">
-                {product.details.map((detail, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start gap-2 text-sm text-muted-foreground"
-                  >
-                    <span className="mt-2 inline-block h-1 w-1 flex-shrink-0 rounded-full bg-primary" />
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {product.details.length > 0 && (
+              <>
+                <Separator className="my-6" />
+                <div className="mb-6">
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+                    Details
+                  </h3>
+                  <ul className="flex flex-col gap-2">
+                    {product.details.map((detail) => (
+                      <li
+                        key={detail}
+                        className="flex items-start gap-2 text-sm text-muted-foreground"
+                      >
+                        <span className="mt-2 inline-block h-1 w-1 flex-shrink-0 rounded-full bg-primary" />
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            )}
 
             <Separator className="my-6" />
 
@@ -235,10 +233,11 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           </div>
           <Button
             className="bg-primary text-primary-foreground hover:bg-primary/90"
+            disabled={!product.inStock}
             onClick={handleAddToCart}
           >
             <ShoppingBag className="mr-2 h-4 w-4" />
-            Add
+            {product.inStock ? "Add" : "Out of stock"}
           </Button>
         </div>
       </div>

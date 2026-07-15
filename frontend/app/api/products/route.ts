@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { products as seedProducts } from "@/lib/products"
 import { mapSupabaseProduct } from "@/lib/server/products"
 import { createSupabasePublicClient } from "@/lib/supabase/public"
 
@@ -7,7 +6,10 @@ export async function GET() {
   const supabase = createSupabasePublicClient()
 
   if (!supabase) {
-    return NextResponse.json({ products: seedProducts, source: "seed" })
+    return NextResponse.json(
+      { error: "Catalogue service is not configured." },
+      { status: 503 }
+    )
   }
 
   const { data, error } = await supabase
@@ -17,7 +19,10 @@ export async function GET() {
     .order("created_at", { ascending: false })
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json(
+      { error: "Catalogue could not be loaded." },
+      { status: 503 }
+    )
   }
 
   return NextResponse.json({

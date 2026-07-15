@@ -1,4 +1,4 @@
-import { products as seedProducts, type Product, type ProductCategory } from "@/lib/products"
+import type { Product } from "@/lib/catalog"
 import { createSupabasePublicClient } from "@/lib/supabase/public"
 
 interface SupabaseProductRow {
@@ -17,13 +17,6 @@ interface SupabaseProductRow {
   is_restocked: boolean
 }
 
-const categories = new Set<ProductCategory>([
-  "Glosses",
-  "Lip Liners",
-  "Lashes",
-  "Lash Trays",
-])
-
 export function mapSupabaseProduct(row: SupabaseProductRow): Product {
   return {
     id: row.id,
@@ -32,15 +25,9 @@ export function mapSupabaseProduct(row: SupabaseProductRow): Product {
     description: row.description,
     price: row.price,
     image: row.image_url,
-    category: categories.has(row.category as ProductCategory)
-      ? (row.category as ProductCategory)
-      : "Glosses",
+    category: row.category,
     shade: row.shade ?? undefined,
-    rating: 5,
-    reviews: 0,
-    details: row.features?.length
-      ? row.features
-      : ["Patch test recommended", "Store in a cool dry place"],
+    details: row.features ?? [],
     inStock: row.inventory_count > 0,
     inventoryCount: row.inventory_count,
     isFeatured: row.is_featured,
@@ -51,7 +38,7 @@ export function mapSupabaseProduct(row: SupabaseProductRow): Product {
 
 export async function getCatalogProducts() {
   const supabase = createSupabasePublicClient()
-  if (!supabase) return seedProducts
+  if (!supabase) return []
 
   const { data, error } = await supabase
     .from("products")
@@ -59,9 +46,14 @@ export async function getCatalogProducts() {
     .eq("is_active", true)
     .order("created_at", { ascending: false })
 
-  if (error || !data?.length) return seedProducts
+  if (error) {
+    console.error("Supabase catalogue query failed:", error.message)
+    return []
+  }
 
-  return data.map((row) => mapSupabaseProduct(row as SupabaseProductRow))
+  return (data ?? []).map((row) =>
+    mapSupabaseProduct(row as SupabaseProductRow)
+  )
 }
 
 export async function getCatalogProduct(idOrSlug: string) {
