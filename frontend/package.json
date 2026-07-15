@@ -8,6 +8,13 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
+    "supabase:local:start": "supabase start",
+    "supabase:local:stop": "supabase stop",
+    "supabase:local:status": "supabase status",
+    "supabase:local:reset": "supabase db reset --local",
+    "supabase:db:lint": "supabase db lint --local --level warning",
+    "supabase:migrations:list": "supabase migration list",
+    "supabase:remote:dry-run": "supabase db push --dry-run --linked",
     "supabase:verify": "node scripts/verify-supabase.mjs"
   },
   "dependencies": {
@@ -76,6 +83,7 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "16.1.6",
     "postcss": "^8.5",
+    "supabase": "^2.109.1",
     "tailwindcss": "^3.4.17",
     "typescript": "5.7.3"
   },
