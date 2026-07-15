@@ -4,7 +4,10 @@ import { z } from "zod"
 import { formatNaira } from "@/lib/money"
 import { getConfiguredAppOrigin } from "@/lib/server/app-url"
 import { sendOrderEmails } from "@/lib/server/email"
-import { initializePaystackPayment } from "@/lib/server/paystack"
+import {
+  initializePaystackPayment,
+  isPaystackConfigured,
+} from "@/lib/server/paystack"
 import { mapSupabaseProduct } from "@/lib/server/products"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 import { createSupabasePublicClient } from "@/lib/supabase/public"
@@ -26,7 +29,8 @@ const checkoutSchema = z.object({
         quantity: z.number().int().min(1).max(20),
       })
     )
-    .min(1),
+    .min(1)
+    .max(50),
 })
 
 export async function POST(request: Request) {
@@ -36,7 +40,7 @@ export async function POST(request: Request) {
   }
 
   const appOrigin = getConfiguredAppOrigin()
-  if (!appOrigin) {
+  if (!appOrigin || !isPaystackConfigured()) {
     return NextResponse.json(
       { error: "Checkout is temporarily unavailable." },
       { status: 503 }
@@ -53,7 +57,24 @@ export async function POST(request: Request) {
     )
   }
 
-  const productIds = parsed.data.items.map((item) => item.productId)
+  const quantitiesByProduct = new Map<string, number>()
+  for (const item of parsed.data.items) {
+    const quantity =
+      (quantitiesByProduct.get(item.productId) ?? 0) + item.quantity
+    if (quantity > 20) {
+      return NextResponse.json(
+        { error: "A cart item exceeds the purchase limit." },
+        { status: 400 }
+      )
+    }
+    quantitiesByProduct.set(item.productId, quantity)
+  }
+
+  const requestedItems = Array.from(
+    quantitiesByProduct,
+    ([productId, quantity]) => ({ productId, quantity })
+  )
+  const productIds = requestedItems.map((item) => item.productId)
   const { data: productRows, error: productError } = await publicSupabase
     .from("products")
     .select("*")
@@ -71,7 +92,7 @@ export async function POST(request: Request) {
     mapSupabaseProduct(product)
   )
 
-  const resolvedItems = parsed.data.items.map((item) => {
+  const resolvedItems = requestedItems.map((item) => {
     const product = catalogProducts.find((p) => p.id === item.productId)
     if (!product || !product.active || !product.inStock) return null
     if (product.inventoryCount > 0 && item.quantity > product.inventoryCount) return null

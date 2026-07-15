@@ -8,10 +8,14 @@ interface InitializePaystackPaymentInput {
   metadata: Record<string, unknown>
 }
 
+export function isPaystackConfigured() {
+  return Boolean(getOptionalEnv("PAYSTACK_SECRET_KEY"))
+}
+
 export async function initializePaystackPayment(input: InitializePaystackPaymentInput) {
   const secretKey = getOptionalEnv("PAYSTACK_SECRET_KEY")
   if (!secretKey) {
-    return { authorizationUrl: null, accessCode: null, configured: false }
+    throw new Error("PAYSTACK_SECRET_KEY is not configured")
   }
 
   const response = await fetch("https://api.paystack.co/transaction/initialize", {
@@ -38,7 +42,7 @@ export async function initializePaystackPayment(input: InitializePaystackPayment
   return {
     authorizationUrl: payload.data.authorization_url as string,
     accessCode: payload.data.access_code as string,
-    configured: true,
+    configured: true as const,
   }
 }
 
