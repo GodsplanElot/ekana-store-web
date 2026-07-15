@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
@@ -70,27 +70,15 @@ export function HeroSection() {
           <div className="relative min-h-[420px] overflow-hidden rounded-md border border-foreground/10 bg-card shadow-[0_30px_90px_rgba(58,35,29,0.14)] lg:min-h-[620px]">
             <Image
               src="/images/hero.jpg"
-              alt="Ekana Cosmetics glosses, liners, and beauty products arranged on pink silk"
+              alt="Ekana Cosmetics beauty products arranged on pink silk"
               fill
               className="object-cover"
               priority
               sizes="(max-width: 1024px) 100vw, 54vw"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(35,22,18,0)_42%,rgba(35,22,18,0.54)_100%)]" />
-            <div className="absolute left-4 top-4 rounded-full border border-white/30 bg-white/20 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur md:left-6 md:top-6">
-              <Sparkles className="mr-2 inline h-3.5 w-3.5" />
-              New finish
-            </div>
             <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4 md:bottom-7 md:left-7 md:right-7">
-              <div>
-                {/*                 <BrandLogo
-                  variant="lockup"
-                  surface="ink"
-                  sizes="46px"
-                  markClassName="size-12"
-                  textClassName="[&_span:first-child]:text-primary-foreground [&_span:last-child]:text-primary-foreground/65"
-                /> */}
-              </div>
+              <div />
               <p className="hidden max-w-[210px] text-right text-xs leading-5 text-white/80 sm:block">
                 A mobile-first beauty counter for shades, restocks, and daily essentials.
               </p>

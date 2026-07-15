@@ -28,7 +28,7 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
                 Featured
               </p>
               <h2 className="font-serif text-3xl text-foreground md:text-5xl">
-                New & Restocked
+                Featured Products
               </h2>
             </div>
           </div>

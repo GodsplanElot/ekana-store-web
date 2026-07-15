@@ -8,7 +8,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Ekana Cosmetics - Mobile Beauty Store",
   description:
-    "Shop glosses, lip liners, and lashes from Ekana Cosmetics. Making beauty feel as good as it looks.",
+    "Shop the latest beauty products from Ekana Cosmetics. Making beauty feel as good as it looks.",
   icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",

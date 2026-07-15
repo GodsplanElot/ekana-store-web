@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { Instagram } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { publicSiteConfig } from "@/lib/site-config";
 
 export function SiteFooter() {
+  const currentYear = new Date().getFullYear();
+  const { instagramUrl, pinterestUrl } = publicSiteConfig;
+
   return (
     <footer className="relative overflow-hidden border-t border-[hsl(var(--brand-panel-border)/0.18)] bg-[hsl(var(--brand-panel))] text-[hsl(var(--brand-panel-foreground))] transition-colors">
       <BrandLogo
@@ -50,6 +53,20 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
+              {instagramUrl ? (
+                <li>
+                  <a href={instagramUrl} rel="noreferrer" target="_blank" className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
+                    Instagram
+                  </a>
+                </li>
+              ) : null}
+              {pinterestUrl ? (
+                <li>
+                  <a href={pinterestUrl} rel="noreferrer" target="_blank" className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
+                    Pinterest
+                  </a>
+                </li>
+              ) : null}
             </ul>
           </div>
 
@@ -72,16 +89,6 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <a href="https://instagram.com" rel="noreferrer" target="_blank" className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
-                  Instagram
-                </a>
-              </li>
-              <li>
-                <a href="https://pinterest.com" rel="noreferrer" target="_blank" className="text-sm text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
-                  Pinterest
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -111,26 +118,9 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[hsl(var(--brand-panel-border)/0.22)] pt-8 md:flex-row">
           <p className="text-xs text-[hsl(var(--brand-panel-muted))]">
-            2026 Ekana Cosmetics. All rights reserved.
+            {currentYear} Ekana Cosmetics. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-5">
-            <a
-              href="https://instagram.com"
-              rel="noreferrer"
-              target="_blank"
-              className="text-xs text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]"
-              aria-label="Instagram"
-            >
-              <Instagram className="h-4 w-4" />
-            </a>
-            <a
-              href="https://pinterest.com"
-              rel="noreferrer"
-              target="_blank"
-              className="text-xs text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]"
-            >
-              Pinterest
-            </a>
             <Link href="/privacy-policy" className="text-xs text-[hsl(var(--brand-panel-muted))] transition hover:text-[hsl(var(--brand-panel-foreground))]">
               Privacy Policy
             </Link>
