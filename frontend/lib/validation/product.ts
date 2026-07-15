@@ -5,7 +5,7 @@ export const productMutationSchema = z.object({
   slug: z.string().trim().min(2).max(120).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   name: z.string().trim().min(2).max(160),
   description: z.string().trim().min(10).max(3000),
-  category: z.enum(["Glosses", "Lip Liners", "Lashes", "Lash Trays"]),
+  category: z.string().trim().min(2).max(120),
   price: z.number().int().min(0).max(100000000),
   imageUrl: z.string().trim().min(1).max(2000),
   shade: z.string().trim().max(120).optional(),

@@ -28,7 +28,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const supabase = await createSupabaseServerClient()
   const { data, error } = await supabase.from("products").select("id,name,slug,category,price,image_url,inventory_count,is_active,is_featured").order("created_at", { ascending: false })
   const query = filters.q?.trim().toLowerCase() ?? ""
-  const products = ((data ?? []) as ProductRow[]).filter((product) => {
+  const allProducts = (data ?? []) as ProductRow[]
+  const categories = Array.from(
+    new Set(allProducts.map((product) => product.category.trim()).filter(Boolean))
+  ).sort((left, right) => left.localeCompare(right))
+  const products = allProducts.filter((product) => {
     const matchesQuery = !query || product.name.toLowerCase().includes(query) || product.slug.toLowerCase().includes(query)
     const matchesCategory = !filters.category || filters.category === "all" || product.category === filters.category
     const matchesStatus = !filters.status || filters.status === "all" || (filters.status === "active" ? product.is_active : !product.is_active)
@@ -45,7 +49,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
         <form className="mt-8 grid gap-3 border border-stone-900/15 bg-[#fffdf9] p-4 md:grid-cols-[1fr_180px_150px_auto]" method="get">
           <label className="relative"><span className="sr-only">Search products</span><Search className="pointer-events-none absolute left-3 top-3.5 size-4 text-stone-400" /><input className="h-11 w-full border border-stone-900/15 bg-white pl-10 pr-3 text-sm outline-none focus:border-stone-950" defaultValue={filters.q} name="q" placeholder="Search name or slug" /></label>
-          <select aria-label="Category" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.category ?? "all"} name="category"><option value="all">All categories</option><option>Glosses</option><option>Lip Liners</option><option>Lashes</option><option>Lash Trays</option></select>
+          <select aria-label="Category" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.category ?? "all"} name="category"><option value="all">All categories</option>{categories.map((category) => <option key={category} value={category}>{category}</option>)}</select>
           <select aria-label="Status" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.status ?? "all"} name="status"><option value="all">Any status</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
           <button className="h-11 border border-stone-950 bg-stone-950 px-5 text-sm font-semibold text-white" type="submit">Filter</button>
         </form>

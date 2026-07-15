@@ -35,7 +35,8 @@ export function HeroSection() {
               </h1>
             </div>
             <p className="max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
-              Glosses, liners, and lashes with a polished finish, built for fast mobile shopping and confident everyday wear.
+              Discover a growing collection of beauty essentials selected for a
+              polished finish and confident everyday wear.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
@@ -43,23 +44,20 @@ export function HeroSection() {
                 className="bg-primary text-primary-foreground shadow-[0_18px_34px_rgba(107,57,72,0.22)] hover:bg-primary/90"
                 asChild
               >
-                <Link href="/shop?category=Glosses">
-                  Shop Glosses
+                <Link href="/shop">
+                  Shop the Collection
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link href="/shop?category=Lashes">Shop Lashes</Link>
-              </Button>
-              <Button variant="ghost" size="lg" asChild>
                 <Link href="/about">The Standard</Link>
               </Button>
             </div>
             <div className="grid max-w-xl grid-cols-3 gap-3 pt-2">
               {[
-                ["Gloss", "glass shine"],
-                ["Line", "soft detail"],
-                ["Lash", "light drama"],
+                ["Curated", "considered choices"],
+                ["Polished", "refined finish"],
+                ["Easy", "mobile shopping"],
               ].map(([label, copy]) => (
                 <div key={label} className="border-l border-primary/25 pl-3">
                   <p className="font-serif text-2xl text-foreground">{label}</p>

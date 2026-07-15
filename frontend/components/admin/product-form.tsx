@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation"
 import { ImagePlus, LoaderCircle, Save } from "lucide-react"
 import type { ProductMutation } from "@/lib/validation/product"
 
-const categories = ["Glosses", "Lip Liners", "Lashes", "Lash Trays"] as const
-
 type ProductFormProps = {
   initialProduct?: ProductMutation & { id: string }
 }
@@ -15,7 +13,7 @@ const emptyProduct: ProductMutation = {
   name: "",
   slug: "",
   description: "",
-  category: "Glosses",
+  category: "",
   price: 0,
   imageUrl: "",
   shade: "",
@@ -110,7 +108,7 @@ export function ProductForm({ initialProduct }: ProductFormProps) {
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <div><label className={labelClass} htmlFor="name">Name</label><input className={inputClass} id="name" onChange={(event) => handleNameChange(event.target.value)} required value={product.name} /></div>
             <div><label className={labelClass} htmlFor="slug">URL slug</label><input className={inputClass} id="slug" onChange={(event) => { setSlugEdited(true); update("slug", makeSlug(event.target.value)) }} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required value={product.slug} /></div>
-            <div><label className={labelClass} htmlFor="category">Category</label><select className={inputClass} id="category" onChange={(event) => update("category", event.target.value as ProductMutation["category"])} value={product.category}>{categories.map((category) => <option key={category}>{category}</option>)}</select></div>
+            <div><label className={labelClass} htmlFor="category">Category</label><input className={inputClass} id="category" maxLength={120} minLength={2} onChange={(event) => update("category", event.target.value)} placeholder="Enter a category" required value={product.category} /></div>
             <div><label className={labelClass} htmlFor="shade">Shade</label><input className={inputClass} id="shade" onChange={(event) => update("shade", event.target.value)} value={product.shade ?? ""} /></div>
             <div><label className={labelClass} htmlFor="price">Price (NGN)</label><input className={inputClass} id="price" min="0" onChange={(event) => update("price", Number(event.target.value))} required step="1" type="number" value={product.price} /></div>
             <div><label className={labelClass} htmlFor="inventory">Inventory</label><input className={inputClass} id="inventory" min="0" onChange={(event) => update("inventoryCount", Number(event.target.value))} required step="1" type="number" value={product.inventoryCount} /></div>

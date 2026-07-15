@@ -13,16 +13,12 @@ import { cn } from "@/lib/utils";
 const primaryLinks = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
-  { href: "/shop?category=Glosses", label: "Glosses" },
-  { href: "/shop?category=Lip%20Liners", label: "Liners" },
-  { href: "/shop?category=Lashes", label: "Lashes" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const mobileLinks = [
   ...primaryLinks,
-  { href: "/shop?category=Lash%20Trays", label: "Lash Trays" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
   { href: "/shipping-returns", label: "Shipping & Returns" },
   { href: "/privacy-policy", label: "Privacy Policy" },
   { href: "/terms", label: "Terms" },

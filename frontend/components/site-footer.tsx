@@ -28,7 +28,8 @@ export function SiteFooter() {
               />
             </Link>
             <p className="mt-5 max-w-xs text-sm leading-7 text-[hsl(var(--brand-panel-muted))]">
-              Glosses, liners, and lashes made to feel luxurious, effortless, and authentic.
+              Thoughtfully selected beauty essentials made to feel luxurious,
+              effortless, and authentic.
             </p>
           </div>
 
@@ -39,10 +40,6 @@ export function SiteFooter() {
             <ul className="flex flex-col gap-2.5">
               {[
                 ["All Products", "/shop"],
-                ["Glosses", "/shop?category=Glosses"],
-                ["Lip Liners", "/shop?category=Lip%20Liners"],
-                ["Lashes", "/shop?category=Lashes"],
-                ["Lash Trays", "/shop?category=Lash%20Trays"],
               ].map(([label, href]) => (
                 <li key={href}>
                   <Link
