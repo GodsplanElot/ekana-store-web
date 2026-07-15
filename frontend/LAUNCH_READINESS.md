@@ -11,11 +11,11 @@ Use this checklist to track the remaining work needed to make the app production
 - [ ] Confirm delivery locations, fees, delivery partner process, and pickup options if any.
 - [ ] Confirm legal review of Privacy Policy and Terms and Conditions.
 
-## 2. Static Frontend Alignment
+## 2. Storefront Alignment
 
 - [ ] Confirm homepage order: hero, category cards, new/restocked products, brand promise, newsletter, footer.
-- [ ] Confirm homepage CTAs: Shop Glosses, Shop Liners, and Shop Lashes.
-- [ ] Confirm all shop categories are visible: Glosses, Lip Liners, Lashes, and Lash Trays.
+- [ ] Confirm the homepage shop CTA opens the catalogue.
+- [ ] Confirm category cards and shop filters are derived from active Supabase products.
 - [ ] Confirm product cards show image, name, short description, price, and add/view action.
 - [ ] Confirm product detail pages show image, description, features, shade/details, quantity, add to cart, delivery note, and related products.
 - [ ] Confirm mobile menu includes Shop, About, Contact, Shipping & Returns, Privacy Policy, and Terms.
