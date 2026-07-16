@@ -26,6 +26,11 @@ type StaffUserRow = {
   is_active: boolean
 }
 
+type StaffAuthContext = {
+  isAuthenticated: boolean
+  staff: StaffUser | null
+}
+
 function mapStaffUser(row: StaffUserRow): StaffUser {
   return {
     id: row.id,
@@ -37,14 +42,18 @@ function mapStaffUser(row: StaffUserRow): StaffUser {
   }
 }
 
-export async function getCurrentStaff(): Promise<StaffUser | null> {
+async function getStaffAuthContext(): Promise<StaffAuthContext> {
   const supabase = await createSupabaseServerClient()
   const { data: { user }, error: userError } = await supabase.auth.getUser()
 
-  if (userError || !user) return null
+  if (userError || !user) {
+    return { isAuthenticated: false, staff: null }
+  }
 
   const admin = createSupabaseAdmin()
-  if (!admin) return null
+  if (!admin) {
+    return { isAuthenticated: true, staff: null }
+  }
 
   const { data, error } = await admin
     .from("staff_users")
@@ -53,9 +62,16 @@ export async function getCurrentStaff(): Promise<StaffUser | null> {
     .eq("is_active", true)
     .maybeSingle<StaffUserRow>()
 
-  if (error || !data) return null
+  if (error || !data) {
+    return { isAuthenticated: true, staff: null }
+  }
 
-  return mapStaffUser(data)
+  return { isAuthenticated: true, staff: mapStaffUser(data) }
+}
+
+export async function getCurrentStaff(): Promise<StaffUser | null> {
+  const { staff } = await getStaffAuthContext()
+  return staff
 }
 
 export function staffHasRole(staff: StaffUser, allowedRoles: readonly StaffRole[]) {
@@ -63,14 +79,18 @@ export function staffHasRole(staff: StaffUser, allowedRoles: readonly StaffRole[
 }
 
 export async function requireStaff(allowedRoles?: readonly StaffRole[]) {
-  const staff = await getCurrentStaff()
+  const { isAuthenticated, staff } = await getStaffAuthContext()
 
-  if (!staff) {
+  if (!isAuthenticated) {
     redirect("/admin/login")
   }
 
+  if (!staff) {
+    redirect("/admin/access-denied?reason=account")
+  }
+
   if (allowedRoles && !staffHasRole(staff, allowedRoles)) {
-    redirect("/admin/access-denied")
+    redirect("/admin/access-denied?reason=role")
   }
 
   return staff

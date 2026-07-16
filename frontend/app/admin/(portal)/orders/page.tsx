@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowRight, Search } from "lucide-react"
 import { formatNaira } from "@/lib/money"
 import { requireStaff } from "@/lib/server/require-staff"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 
 type OrderRow = {
   reference: string
@@ -26,8 +26,8 @@ function badgeClass(status: string) {
 export default async function OrdersPage({ searchParams }: OrdersPageProps) {
   await requireStaff(["owner", "admin", "support"])
   const filters = await searchParams
-  const supabase = createSupabaseAdmin()
-  const { data, error } = supabase ? await supabase.from("orders").select("reference,customer_name,customer_email,total,payment_status,fulfillment_status,created_at").order("created_at", { ascending: false }) : { data: null, error: new Error("Supabase is not configured") }
+  const supabase = await createSupabaseServerClient()
+  const { data, error } = await supabase.from("orders").select("reference,customer_name,customer_email,total,payment_status,fulfillment_status,created_at").order("created_at", { ascending: false })
   const query = filters.q?.trim().toLowerCase() ?? ""
   const orders = ((data ?? []) as OrderRow[]).filter((order) => {
     const matchesQuery = !query || order.reference.toLowerCase().includes(query) || order.customer_name.toLowerCase().includes(query) || order.customer_email.toLowerCase().includes(query)

@@ -2,11 +2,15 @@ import { randomUUID } from "node:crypto"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { formatNaira } from "@/lib/money"
-import { products } from "@/lib/products"
+import { getConfiguredAppOrigin } from "@/lib/server/app-url"
 import { sendOrderEmails } from "@/lib/server/email"
-import { initializePaystackPayment } from "@/lib/server/paystack"
+import {
+  initializePaystackPayment,
+  isPaystackConfigured,
+} from "@/lib/server/paystack"
 import { mapSupabaseProduct } from "@/lib/server/products"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabasePublicClient } from "@/lib/supabase/public"
 
 const checkoutSchema = z.object({
   customer: z.object({
@@ -25,7 +29,8 @@ const checkoutSchema = z.object({
         quantity: z.number().int().min(1).max(20),
       })
     )
-    .min(1),
+    .min(1)
+    .max(50),
 })
 
 export async function POST(request: Request) {
@@ -34,20 +39,60 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid checkout details." }, { status: 400 })
   }
 
-  const supabase = createSupabaseAdmin()
-  const productIds = parsed.data.items.map((item) => item.productId)
-  const catalogProducts = supabase
-    ? await supabase
-        .from("products")
-        .select("*")
-        .in("id", productIds)
-        .eq("is_active", true)
-        .then(({ data, error }) =>
-          error || !data ? [] : data.map((product) => mapSupabaseProduct(product))
-        )
-    : products
+  const appOrigin = getConfiguredAppOrigin()
+  if (!appOrigin || !isPaystackConfigured()) {
+    return NextResponse.json(
+      { error: "Checkout is temporarily unavailable." },
+      { status: 503 }
+    )
+  }
 
-  const resolvedItems = parsed.data.items.map((item) => {
+  const publicSupabase = createSupabasePublicClient()
+  const adminSupabase = createSupabaseAdmin()
+
+  if (!publicSupabase || !adminSupabase) {
+    return NextResponse.json(
+      { error: "Checkout is temporarily unavailable." },
+      { status: 503 }
+    )
+  }
+
+  const quantitiesByProduct = new Map<string, number>()
+  for (const item of parsed.data.items) {
+    const quantity =
+      (quantitiesByProduct.get(item.productId) ?? 0) + item.quantity
+    if (quantity > 20) {
+      return NextResponse.json(
+        { error: "A cart item exceeds the purchase limit." },
+        { status: 400 }
+      )
+    }
+    quantitiesByProduct.set(item.productId, quantity)
+  }
+
+  const requestedItems = Array.from(
+    quantitiesByProduct,
+    ([productId, quantity]) => ({ productId, quantity })
+  )
+  const productIds = requestedItems.map((item) => item.productId)
+  const { data: productRows, error: productError } = await publicSupabase
+    .from("products")
+    .select("*")
+    .in("id", productIds)
+    .eq("is_active", true)
+
+  if (productError || !productRows) {
+    return NextResponse.json(
+      { error: "Checkout is temporarily unavailable." },
+      { status: 503 }
+    )
+  }
+
+  const catalogProducts = productRows.map((product) =>
+    mapSupabaseProduct(product)
+  )
+
+  const resolvedItems = requestedItems.map((item) => {
     const product = catalogProducts.find((p) => p.id === item.productId)
     if (!product || !product.active || !product.inStock) return null
     if (product.inventoryCount > 0 && item.quantity > product.inventoryCount) return null
@@ -73,30 +118,33 @@ export async function POST(request: Request) {
   const total = subtotal + deliveryFee
   const reference = `ekana_${Date.now()}_${randomUUID().slice(0, 8)}`
   const customerName = `${parsed.data.customer.firstName} ${parsed.data.customer.lastName}`
-  const origin = request.headers.get("origin") ?? process.env.NEXT_PUBLIC_APP_URL ?? ""
-  const callbackUrl = `${origin}/checkout?reference=${encodeURIComponent(reference)}`
+  const callbackUrl = new URL(
+    `/checkout?reference=${encodeURIComponent(reference)}`,
+    appOrigin
+  ).toString()
 
-  if (supabase) {
-    const { error } = await supabase.from("orders").insert({
-      reference,
-      customer_email: parsed.data.customer.email,
-      customer_name: customerName,
-      customer_phone: parsed.data.customer.phone,
-      delivery_address: parsed.data.customer.address,
-      delivery_city: parsed.data.customer.city,
-      order_notes: parsed.data.customer.notes,
-      subtotal,
-      delivery_fee: deliveryFee,
-      total,
-      payment_status: "pending",
-      fulfillment_status: "new",
-      paystack_reference: reference,
-      items,
-    })
+  const { error: orderError } = await adminSupabase.from("orders").insert({
+    reference,
+    customer_email: parsed.data.customer.email,
+    customer_name: customerName,
+    customer_phone: parsed.data.customer.phone,
+    delivery_address: parsed.data.customer.address,
+    delivery_city: parsed.data.customer.city,
+    order_notes: parsed.data.customer.notes,
+    subtotal,
+    delivery_fee: deliveryFee,
+    total,
+    payment_status: "pending",
+    fulfillment_status: "new",
+    paystack_reference: reference,
+    items,
+  })
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+  if (orderError) {
+    return NextResponse.json(
+      { error: "Order could not be created." },
+      { status: 500 }
+    )
   }
 
   const payment = await initializePaystackPayment({

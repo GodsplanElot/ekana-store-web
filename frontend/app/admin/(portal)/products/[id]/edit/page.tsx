@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { ProductForm } from "@/components/admin/product-form"
 import { requireStaff } from "@/lib/server/require-staff"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 import type { ProductMutation } from "@/lib/validation/product"
 
 type EditProductPageProps = { params: Promise<{ id: string }> }
@@ -27,8 +27,7 @@ type ProductRow = {
 export default async function EditProductPage({ params }: EditProductPageProps) {
   await requireStaff(["owner", "admin", "inventory"])
   const { id } = await params
-  const supabase = createSupabaseAdmin()
-  if (!supabase) notFound()
+  const supabase = await createSupabaseServerClient()
 
   const { data } = await supabase.from("products").select("*").eq("id", id).maybeSingle()
   if (!data) notFound()

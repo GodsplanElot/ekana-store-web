@@ -1,7 +1,7 @@
 "use client"
 
 import { track } from "@vercel/analytics"
-import type { Product } from "@/lib/products"
+import type { Product } from "@/lib/catalog"
 
 export function trackProductView(product: Product) {
   track("product_view", {

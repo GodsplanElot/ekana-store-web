@@ -4,7 +4,7 @@ import { ArrowLeft, Mail, MapPin, Phone } from "lucide-react"
 import { OrderStatusForm } from "@/components/admin/order-status-form"
 import { formatNaira } from "@/lib/money"
 import { requireStaff, staffHasRole } from "@/lib/server/require-staff"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 
 type OrderItem = { productId: string; name: string; price: number; quantity: number; lineTotal: number }
 type OrderRow = {
@@ -29,8 +29,7 @@ type OrderPageProps = { params: Promise<{ reference: string }> }
 export default async function OrderPage({ params }: OrderPageProps) {
   const staff = await requireStaff(["owner", "admin", "support"])
   const { reference } = await params
-  const supabase = createSupabaseAdmin()
-  if (!supabase) notFound()
+  const supabase = await createSupabaseServerClient()
   const { data } = await supabase.from("orders").select("*").eq("reference", reference).maybeSingle()
   if (!data) notFound()
   const order = data as OrderRow

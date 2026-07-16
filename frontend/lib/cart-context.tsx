@@ -9,7 +9,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react"
-import { products, type Product } from "@/lib/products"
+import type { Product } from "@/lib/catalog"
 
 export interface CartItem {
   product: Product
@@ -18,7 +18,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[]
-  addItem: (product: Product) => void
+  addItem: (product: Product, quantity?: number) => void
   removeItem: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => void
   clearCart: () => void
@@ -29,13 +29,13 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
-const CART_STORAGE_KEY = "ekana-cart"
+const CART_STORAGE_KEY = "ekana-cart-v2"
 const CART_UPDATED_EVENT = "ekana-cart-updated"
 
 interface StoredCartItem {
   productId: string
   quantity: number
-  product?: Product
+  product: Product
 }
 
 function getCartSnapshot() {
@@ -48,7 +48,7 @@ function parseStoredItems(snapshot: string): CartItem[] {
     if (!Array.isArray(storedItems)) return []
 
     return storedItems.flatMap((item) => {
-      const product = item.product ?? products.find((p) => p.id === item.productId)
+      const product = item.product
       if (!product || !Number.isFinite(item.quantity) || item.quantity <= 0) {
         return []
       }
@@ -90,15 +90,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const items = useMemo(() => parseStoredItems(cartSnapshot), [cartSnapshot])
   const [isCartOpen, setIsCartOpen] = useState(false)
 
-  const addItem = useCallback((product: Product) => {
+  const addItem = useCallback((product: Product, quantity = 1) => {
+    if (!product.inStock || !Number.isFinite(quantity) || quantity <= 0) return
+
     const existing = items.find((item) => item.product.id === product.id)
+    const nextQuantity = Math.min(
+      product.inventoryCount,
+      (existing?.quantity ?? 0) + Math.floor(quantity)
+    )
     const nextItems = existing
       ? items.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: nextQuantity }
             : item
         )
-      : [...items, { product, quantity: 1 }]
+      : [...items, { product, quantity: nextQuantity }]
 
     writeStoredItems(nextItems)
     setIsCartOpen(true)
@@ -116,7 +122,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     writeStoredItems(
       items.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        item.product.id === productId
+          ? {
+              ...item,
+              quantity: Math.min(
+                Math.floor(quantity),
+                item.product.inventoryCount
+              ),
+            }
+          : item
       )
     )
   }, [items])

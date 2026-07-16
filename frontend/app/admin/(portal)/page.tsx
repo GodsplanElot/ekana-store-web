@@ -16,7 +16,7 @@ export default async function AdminPage() {
         <div className="flex flex-col justify-between gap-5 border-b border-stone-900/15 pb-8 md:flex-row md:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8b5552]">Store operations</p>
-            <h1 className="mt-3 font-serif text-4xl tracking-tight md:text-5xl">Good to see you, {staff.displayName.split(" ")[0]}.</h1>
+            <h1 className="mt-3 font-serif text-4xl md:text-5xl">Good to see you, {staff.displayName.split(" ")[0]}.</h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">Manage the catalogue and keep customer orders moving from one secure workspace.</p>
           </div>
           <div className="flex items-center gap-2 self-start border border-emerald-900/15 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-900">

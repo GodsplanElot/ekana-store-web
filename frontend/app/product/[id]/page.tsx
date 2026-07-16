@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { Providers } from "@/components/providers";
 import { ProductDetail } from "@/components/product-detail";
-import { products } from "@/lib/products";
 import { getCatalogProduct, getCatalogProducts } from "@/lib/server/products";
 import type { Metadata } from "next";
 
@@ -21,10 +20,6 @@ export async function generateMetadata({
     title: `${product.name} - Ekana Cosmetics`,
     description: product.description,
   };
-}
-
-export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }));
 }
 
 export default async function ProductPage({ params }: PageProps) {

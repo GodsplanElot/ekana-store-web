@@ -1,9 +1,10 @@
 import Link from "next/link"
 import { Pencil, Plus, Search } from "lucide-react"
 import { DeactivateProductButton } from "@/components/admin/deactivate-product-button"
+import { normalizeProductCategory } from "@/lib/catalog"
 import { formatNaira } from "@/lib/money"
 import { requireStaff, staffHasRole } from "@/lib/server/require-staff"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 
 type ProductRow = {
   id: string
@@ -25,12 +26,20 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const staff = await requireStaff()
   const canEdit = staffHasRole(staff, ["owner", "admin", "inventory"])
   const filters = await searchParams
-  const supabase = createSupabaseAdmin()
-  const { data, error } = supabase ? await supabase.from("products").select("id,name,slug,category,price,image_url,inventory_count,is_active,is_featured").order("created_at", { ascending: false }) : { data: null, error: new Error("Supabase is not configured") }
+  const supabase = await createSupabaseServerClient()
+  const { data, error } = await supabase.from("products").select("id,name,slug,category,price,image_url,inventory_count,is_active,is_featured").order("created_at", { ascending: false })
   const query = filters.q?.trim().toLowerCase() ?? ""
-  const products = ((data ?? []) as ProductRow[]).filter((product) => {
+  const allProducts = (data ?? []) as ProductRow[]
+  const categories = Array.from(
+    new Set(
+      allProducts
+        .map((product) => normalizeProductCategory(product.category))
+        .filter(Boolean)
+    )
+  ).sort((left, right) => left.localeCompare(right))
+  const products = allProducts.filter((product) => {
     const matchesQuery = !query || product.name.toLowerCase().includes(query) || product.slug.toLowerCase().includes(query)
-    const matchesCategory = !filters.category || filters.category === "all" || product.category === filters.category
+    const matchesCategory = !filters.category || filters.category === "all" || normalizeProductCategory(product.category) === filters.category
     const matchesStatus = !filters.status || filters.status === "all" || (filters.status === "active" ? product.is_active : !product.is_active)
     return matchesQuery && matchesCategory && matchesStatus
   })
@@ -45,7 +54,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
         <form className="mt-8 grid gap-3 border border-stone-900/15 bg-[#fffdf9] p-4 md:grid-cols-[1fr_180px_150px_auto]" method="get">
           <label className="relative"><span className="sr-only">Search products</span><Search className="pointer-events-none absolute left-3 top-3.5 size-4 text-stone-400" /><input className="h-11 w-full border border-stone-900/15 bg-white pl-10 pr-3 text-sm outline-none focus:border-stone-950" defaultValue={filters.q} name="q" placeholder="Search name or slug" /></label>
-          <select aria-label="Category" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.category ?? "all"} name="category"><option value="all">All categories</option><option>Glosses</option><option>Lip Liners</option><option>Lashes</option><option>Lash Trays</option></select>
+          <select aria-label="Category" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.category ?? "all"} name="category"><option value="all">All categories</option>{categories.map((category) => <option key={category} value={category}>{category}</option>)}</select>
           <select aria-label="Status" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.status ?? "all"} name="status"><option value="all">Any status</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
           <button className="h-11 border border-stone-950 bg-stone-950 px-5 text-sm font-semibold text-white" type="submit">Filter</button>
         </form>
@@ -62,7 +71,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <p className={`text-sm ${product.inventory_count <= 5 ? "font-semibold text-amber-800" : "text-stone-600"}`}>{product.inventory_count} units</p>
               <div className="flex justify-end gap-2">{canEdit ? <><Link aria-label={`Edit ${product.name}`} className="grid size-9 place-items-center border border-stone-900/15 text-stone-600 transition hover:border-stone-950 hover:text-stone-950" href={`/admin/products/${product.id}/edit`}><Pencil className="size-4" /></Link>{product.is_active ? <DeactivateProductButton id={product.id} name={product.name} /> : null}</> : <span className="text-xs text-stone-400">Read only</span>}</div>
             </article>
-          )) : <div className="px-5 py-16 text-center"><p className="font-serif text-2xl">No products found</p><p className="mt-2 text-sm text-stone-500">Adjust the filters or create a new product.</p></div>}
+          )) : error ? null : <div className="px-5 py-16 text-center"><p className="font-serif text-2xl">No products found</p><p className="mt-2 text-sm text-stone-500">Adjust the filters or create a new product.</p></div>}
         </div>
       </div>
     </section>

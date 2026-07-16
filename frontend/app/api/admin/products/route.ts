@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { writeAdminAuditLog } from "@/lib/server/admin-audit"
 import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { productMutationSchema } from "@/lib/validation/product"
 
 const productRoles = ["owner", "admin", "inventory"] as const
@@ -10,8 +10,7 @@ export async function GET() {
   const staff = await getCurrentStaff()
   if (!staff) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const supabase = createSupabaseAdmin()
-  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
+  const supabase = await createSupabaseServerClient()
 
   const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -30,8 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid product payload", issues: parsed.error.flatten() }, { status: 400 })
   }
 
-  const supabase = createSupabaseAdmin()
-  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
+  const supabase = await createSupabaseServerClient()
 
   const product = parsed.data
   const id = product.id ?? crypto.randomUUID()

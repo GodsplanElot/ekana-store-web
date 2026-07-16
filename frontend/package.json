@@ -5,9 +5,17 @@
   "packageManager": "pnpm@10.14.0",
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "supabase:local:start": "supabase start --ignore-health-check",
+    "supabase:local:stop": "supabase stop",
+    "supabase:local:status": "supabase status",
+    "supabase:local:reset": "supabase db reset --local",
+    "supabase:db:lint": "supabase db lint --local --level warning",
+    "supabase:migrations:list": "supabase migration list",
+    "supabase:remote:dry-run": "supabase db push --dry-run --linked",
+    "supabase:verify": "node scripts/verify-supabase.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -71,10 +79,10 @@
     "@types/node": "^22",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.1.6",
     "postcss": "^8.5",
+    "supabase": "^2.109.1",
     "tailwindcss": "^3.4.17",
     "typescript": "5.7.3"
   },

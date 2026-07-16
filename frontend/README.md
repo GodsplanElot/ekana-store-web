@@ -11,7 +11,7 @@ Next.js storefront for Ekana Cosmetics. The app includes a mobile-first product 
 - Supabase for Postgres/Auth-backed backend data
 - Paystack for payments
 - Resend for email notifications
-- Cloudinary-ready image storage configuration
+- Supabase Storage for product images
 - pnpm
 
 ## Getting Started
@@ -40,6 +40,11 @@ pnpm start
 
 ## Current Scope
 
-The app runs without service credentials by using the seed catalog in `lib/products.ts`. When environment variables are configured, API routes persist newsletter signups and orders to Supabase, initialize Paystack payments, and send order emails through Resend.
+The storefront catalogue is sourced only from Supabase. Without valid Supabase
+configuration, catalogue APIs and pages fail closed. Empty catalogue states are
+shown only after a successful query returns no products. There is no local
+seed-product fallback.
 
-Copy `.env.example` to `.env.local` and fill the relevant keys before enabling live backend behavior. Apply `db/migrations/0001_initial_backend.sql` to Supabase before using the backend tables.
+Copy `.env.example` to `.env.local`, fill the relevant keys, and follow the
+reviewed Supabase CLI workflow in [`supabase/README.md`](supabase/README.md).
+The files in `db/migrations` are historical only and must not be rerun.

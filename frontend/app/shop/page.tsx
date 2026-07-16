@@ -5,8 +5,7 @@ import { getCatalogProducts } from "@/lib/server/products";
 
 export const metadata = {
   title: "Shop All - Ekana Cosmetics",
-  description:
-    "Browse Ekana Cosmetics glosses, lip liners, mink lash pairs, and lash trays.",
+  description: "Browse the latest products from Ekana Cosmetics.",
 };
 
 export const dynamic = "force-dynamic";

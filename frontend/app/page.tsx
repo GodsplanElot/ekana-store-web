@@ -14,7 +14,7 @@ export default async function HomePage() {
   return (
     <Providers>
       <HeroSection />
-      <CategoriesSection />
+      <CategoriesSection products={products} />
       <FeaturedProducts products={products} />
       <BrandPromise />
       <NewsletterSection />

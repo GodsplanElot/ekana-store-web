@@ -1,16 +1,22 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Ekana Cosmetics - Mobile Beauty Store",
   description:
-    "Shop glosses, lip liners, and lashes from Ekana Cosmetics. Making beauty feel as good as it looks.",
+    "Shop the latest beauty products from Ekana Cosmetics. Making beauty feel as good as it looks.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf5f7",
+  themeColor: "#fff7ec",
 };
 
 export default function RootLayout({
@@ -19,10 +25,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased">
-        {children}
-        <Analytics />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          disableTransitionOnChange
+          enableSystem
+          storageKey="ekana-theme"
+        >
+          {children}
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );
