@@ -17,13 +17,12 @@ The secret key is server-only and bypasses Row Level Security. Never prefix it w
 
 ## Apply the database migrations
 
-Run the SQL files in order through the Supabase SQL editor:
+Use only the timestamped files under `supabase/migrations`. Follow
+[`supabase/README.md`](supabase/README.md) to reset and lint a local database,
+compare local and hosted migration histories, and review a hosted dry run.
 
-1. `db/migrations/0001_initial_backend.sql`
-2. `db/migrations/0002_staff_users.sql`
-3. `db/migrations/0003_product_images.sql`
-4. `db/migrations/0004_admin_audit_logs.sql`
-5. `db/migrations/0005_security_foundation.sql`
+The files under `db/migrations` are retained only as an audit archive of SQL
+that was previously applied through the Dashboard. Do not rerun them.
 
 Then, from `frontend`, run:
 

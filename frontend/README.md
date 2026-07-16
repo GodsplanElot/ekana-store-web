@@ -45,5 +45,6 @@ configuration, catalogue APIs and pages fail closed. Empty catalogue states are
 shown only after a successful query returns no products. There is no local
 seed-product fallback.
 
-Copy `.env.example` to `.env.local`, fill the relevant keys, and apply every SQL
-migration in `db/migrations` in filename order before using the app.
+Copy `.env.example` to `.env.local`, fill the relevant keys, and follow the
+reviewed Supabase CLI workflow in [`supabase/README.md`](supabase/README.md).
+The files in `db/migrations` are historical only and must not be rerun.

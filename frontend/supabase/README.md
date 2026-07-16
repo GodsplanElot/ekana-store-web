@@ -22,6 +22,12 @@ pnpm supabase:local:reset
 pnpm supabase:db:lint
 ```
 
+On this Windows development machine, startup uses Supabase's supported
+`--ignore-health-check` flag because the CLI deadline expires while Docker
+services are still warming up. This does not skip migration execution. Wait a
+few minutes, then use `pnpm supabase:local:status` and verify the required
+services before developing or testing.
+
 `supabase:local:reset` rebuilds only the local Docker database, applies every
 CLI migration in order, and then runs `seed.sql`. It does not reset the linked
 hosted database.
@@ -63,6 +69,10 @@ pnpm exec supabase db push --linked
 ```
 
 Never use `supabase db reset --linked`; it is destructive to hosted data.
+
+Drizzle's TypeScript schema can be used as an application mapping, but Drizzle
+Kit does not generate or deploy migrations in this repository. Supabase CLI is
+the sole migration runner.
 
 ## Application verification
 

@@ -24,7 +24,7 @@ Use this checklist to track the remaining work needed to make the app production
 ## 3. Serverless Backend & Supabase
 
 - [ ] Create or configure the Supabase project.
-- [ ] Apply `db/migrations/0001_initial_backend.sql` through `db/migrations/0005_security_foundation.sql` in filename order.
+- [ ] Follow `supabase/README.md`; confirm the CLI migration history and hosted dry run are clean.
 - [ ] From `frontend`, run `pnpm supabase:verify` and confirm every check passes.
 - [ ] Add production products into the `products` table.
 - [ ] Confirm `GET /api/products` returns Supabase products when credentials are configured.
@@ -80,7 +80,7 @@ ORDER_NOTIFICATION_EMAIL=
 
 ## 6. Staff Admin Operations
 
-- [ ] Apply staff and audit migrations, then create the first owner account.
+- [ ] Confirm the CLI migration history is current, then create the first owner account.
 - [ ] Test product creation, image upload, editing, and deactivation in `/admin/products`.
 - [ ] Test order review and filtering in `/admin/orders`.
 - [ ] Test valid fulfilment transitions and staff role restrictions.
