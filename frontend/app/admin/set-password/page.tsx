@@ -4,6 +4,8 @@ import { BrandLogo } from "@/components/brand-logo";
 import { SetPasswordForm } from "@/components/admin/set-password-form";
 import { requireStaff } from "@/lib/server/require-staff";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Set staff password | Ekana Cosmetics" };
 
 export default async function SetPasswordPage() {
