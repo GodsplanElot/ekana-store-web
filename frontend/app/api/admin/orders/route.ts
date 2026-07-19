@@ -5,17 +5,16 @@ import { getCurrentStaff, staffHasRole } from "@/lib/server/require-staff"
 import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 
-const paymentStatuses = ["pending", "paid", "failed", "refunded"] as const
 const fulfillmentStatuses = ["new", "processing", "shipped", "delivered", "cancelled"] as const
 const orderUpdateSchema = z.object({
   reference: z.string().min(1),
-  paymentStatus: z.enum(paymentStatuses).optional(),
-  fulfillmentStatus: z.enum(fulfillmentStatuses).optional(),
-}).refine((value) => value.paymentStatus || value.fulfillmentStatus, "No status update supplied")
+  fulfillmentStatus: z.enum(fulfillmentStatuses),
+}).strict()
+const verifiedPaymentSources = new Set(["webhook", "verification", "reconciliation"])
 
 const allowedTransitions: Record<(typeof fulfillmentStatuses)[number], readonly (typeof fulfillmentStatuses)[number][]> = {
-  new: ["processing", "cancelled"],
-  processing: ["shipped", "cancelled"],
+  new: ["processing"],
+  processing: ["shipped"],
   shipped: ["delivered"],
   delivered: [],
   cancelled: [],
@@ -42,30 +41,73 @@ export async function PATCH(request: Request) {
 
   const parsed = orderUpdateSchema.safeParse(await request.json())
   if (!parsed.success) return NextResponse.json({ error: "Invalid order update" }, { status: 400 })
-  if (parsed.data.paymentStatus && !staffHasRole(staff, ["owner", "admin"])) {
-    return NextResponse.json({ error: "Your role cannot change payment status" }, { status: 403 })
-  }
 
   const supabase = createSupabaseAdmin()
   if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 })
 
-  const { data: current, error: readError } = await supabase.from("orders").select("fulfillment_status").eq("reference", parsed.data.reference).maybeSingle()
+  const { data: current, error: readError } = await supabase
+    .from("orders")
+    .select("fulfillment_status,payment_status,payment_confirmed_at,payment_confirmation_source")
+    .eq("reference", parsed.data.reference)
+    .maybeSingle()
   if (readError) return NextResponse.json({ error: readError.message }, { status: 500 })
   if (!current) return NextResponse.json({ error: "Order not found" }, { status: 404 })
 
-  if (parsed.data.fulfillmentStatus && parsed.data.fulfillmentStatus !== current.fulfillment_status) {
+  const isTransition = parsed.data.fulfillmentStatus !== current.fulfillment_status
+  const requiresVerifiedPayment =
+    isTransition && ["processing", "shipped", "delivered"].includes(parsed.data.fulfillmentStatus)
+
+  if (isTransition) {
     const currentStatus = current.fulfillment_status as keyof typeof allowedTransitions
     if (!allowedTransitions[currentStatus]?.includes(parsed.data.fulfillmentStatus)) {
       return NextResponse.json({ error: `Cannot move an order from ${currentStatus} to ${parsed.data.fulfillmentStatus}` }, { status: 409 })
     }
+
+    const hasVerifiedPayment =
+      current.payment_status === "paid" &&
+      Boolean(current.payment_confirmed_at) &&
+      typeof current.payment_confirmation_source === "string" &&
+      verifiedPaymentSources.has(current.payment_confirmation_source)
+
+    if (requiresVerifiedPayment && !hasVerifiedPayment) {
+      return NextResponse.json({ error: "Payment must be confirmed before fulfilment can begin" }, { status: 409 })
+    }
   }
 
-  const update: Record<string, string> = { updated_at: new Date().toISOString() }
-  if (parsed.data.paymentStatus) update.payment_status = parsed.data.paymentStatus
-  if (parsed.data.fulfillmentStatus) update.fulfillment_status = parsed.data.fulfillmentStatus
+  let updateQuery = supabase
+    .from("orders")
+    .update({
+      fulfillment_status: parsed.data.fulfillmentStatus,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("reference", parsed.data.reference)
+    .eq("fulfillment_status", current.fulfillment_status)
 
-  const { error } = await supabase.from("orders").update(update).eq("reference", parsed.data.reference)
+  if (requiresVerifiedPayment) {
+    updateQuery = updateQuery
+      .eq("payment_status", "paid")
+      .eq("payment_confirmed_at", current.payment_confirmed_at)
+      .eq("payment_confirmation_source", current.payment_confirmation_source)
+  }
+
+  const { data: updated, error } = await updateQuery.select("reference").maybeSingle()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  await writeAdminAuditLog({ staffUserId: staff.id, action: "order.status_updated", entityType: "order", entityId: parsed.data.reference, metadata: { paymentStatus: parsed.data.paymentStatus, fulfillmentStatus: parsed.data.fulfillmentStatus } })
+  if (!updated) {
+    return NextResponse.json(
+      { error: "Order changed while saving. Refresh and try again." },
+      { status: 409 }
+    )
+  }
+
+  await writeAdminAuditLog({
+    staffUserId: staff.id,
+    action: "order.status_updated",
+    entityType: "order",
+    entityId: parsed.data.reference,
+    metadata: {
+      previousFulfillmentStatus: current.fulfillment_status,
+      fulfillmentStatus: parsed.data.fulfillmentStatus,
+    },
+  })
   return NextResponse.json({ ok: true })
 }

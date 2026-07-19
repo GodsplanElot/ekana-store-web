@@ -16,10 +16,24 @@ type OrderRow = {
 
 type OrdersPageProps = { searchParams: Promise<{ q?: string; payment?: string; fulfillment?: string }> }
 
+const paymentStatuses = [
+  "pending",
+  "processing",
+  "paid",
+  "failed",
+  "abandoned",
+  "cancelled",
+  "refund_pending",
+  "refunded",
+  "partially_refunded",
+  "reversed",
+  "review",
+] as const
+
 function badgeClass(status: string) {
-  if (["paid", "delivered"].includes(status)) return "bg-emerald-50 text-emerald-800"
-  if (["failed", "cancelled"].includes(status)) return "bg-red-50 text-red-800"
-  if (["shipped", "processing"].includes(status)) return "bg-blue-50 text-blue-800"
+  if (["paid", "refunded", "delivered"].includes(status)) return "bg-emerald-50 text-emerald-800"
+  if (["failed", "abandoned", "cancelled", "reversed"].includes(status)) return "bg-red-50 text-red-800"
+  if (["shipped", "processing", "refund_pending"].includes(status)) return "bg-blue-50 text-blue-800"
   return "bg-amber-50 text-amber-800"
 }
 
@@ -38,7 +52,7 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
     <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8b5552]">Fulfilment</p><h1 className="mt-3 font-serif text-4xl">Orders</h1><p className="mt-2 text-sm text-stone-600">{orders.length} orders in this view</p></div>
     <form className="mt-8 grid gap-3 border border-stone-900/15 bg-[#fffdf9] p-4 md:grid-cols-[1fr_170px_180px_auto]" method="get">
       <label className="relative"><span className="sr-only">Search orders</span><Search className="pointer-events-none absolute left-3 top-3.5 size-4 text-stone-400" /><input className="h-11 w-full border border-stone-900/15 bg-white pl-10 pr-3 text-sm outline-none focus:border-stone-950" defaultValue={filters.q} name="q" placeholder="Reference or customer" /></label>
-      <select aria-label="Payment status" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.payment ?? "all"} name="payment"><option value="all">Any payment</option>{["pending", "paid", "failed", "refunded"].map((status) => <option key={status}>{status}</option>)}</select>
+      <select aria-label="Payment status" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.payment ?? "all"} name="payment"><option value="all">Any payment</option>{paymentStatuses.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}</select>
       <select aria-label="Fulfilment status" className="h-11 border border-stone-900/15 bg-white px-3 text-sm" defaultValue={filters.fulfillment ?? "all"} name="fulfillment"><option value="all">Any fulfilment</option>{["new", "processing", "shipped", "delivered", "cancelled"].map((status) => <option key={status}>{status}</option>)}</select>
       <button className="h-11 bg-stone-950 px-5 text-sm font-semibold text-white" type="submit">Filter</button>
     </form>
