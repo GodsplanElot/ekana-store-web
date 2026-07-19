@@ -1,39 +1,56 @@
-import { NextResponse } from "next/server"
-import { z } from "zod"
-import { verifyPaystackPayment } from "@/lib/server/paystack"
-import { createSupabaseAdmin } from "@/lib/server/supabase-admin"
+import { after, NextResponse } from "next/server"
+import { paymentReferenceRequestSchema } from "@/lib/server/payments/domain"
+import { dispatchPaymentNotificationsBestEffort } from "@/lib/server/payments/notifications"
+import {
+  getPublicPaymentError,
+  verifyAndReconcilePayment,
+} from "@/lib/server/payments/service"
 
-const verifySchema = z.object({
-  reference: z.string().min(1),
-})
+export const runtime = "nodejs"
+
+function noStoreHeaders(retryable = false) {
+  return {
+    "Cache-Control": "no-store",
+    ...(retryable ? { "Retry-After": "3" } : {}),
+  }
+}
 
 export async function POST(request: Request) {
-  const parsed = verifySchema.safeParse(await request.json())
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Missing payment reference." }, { status: 400 })
-  }
-
-  let payment
+  let body: unknown
   try {
-    payment = await verifyPaystackPayment(parsed.data.reference)
-  } catch (error) {
+    body = await request.json()
+  } catch {
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error ? error.message : "Unable to verify payment.",
-      },
-      { status: 502 }
+      { error: "Missing or invalid payment reference." },
+      { status: 400, headers: noStoreHeaders() }
     )
   }
-  const paymentStatus = payment.status === "success" ? "paid" : payment.status
 
-  const supabase = createSupabaseAdmin()
-  if (supabase) {
-    await supabase
-      .from("orders")
-      .update({ payment_status: paymentStatus, updated_at: new Date().toISOString() })
-      .eq("reference", parsed.data.reference)
+  const parsed = paymentReferenceRequestSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Missing or invalid payment reference." },
+      { status: 400, headers: noStoreHeaders() }
+    )
   }
 
-  return NextResponse.json({ ok: true, paymentStatus, payment })
+  try {
+    const result = await verifyAndReconcilePayment(parsed.data.reference)
+    const { notificationPaymentAttemptId, ...publicResult } = result
+    if (notificationPaymentAttemptId) {
+      after(() =>
+        dispatchPaymentNotificationsBestEffort(notificationPaymentAttemptId)
+      )
+    }
+    return NextResponse.json(publicResult, { headers: noStoreHeaders() })
+  } catch (error) {
+    const details = getPublicPaymentError(error)
+    return NextResponse.json(
+      { error: details.message, retryable: details.retryable },
+      {
+        status: details.status,
+        headers: noStoreHeaders(details.retryable),
+      }
+    )
+  }
 }
