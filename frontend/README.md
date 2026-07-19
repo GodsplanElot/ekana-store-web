@@ -48,3 +48,7 @@ seed-product fallback.
 Copy `.env.example` to `.env.local`, fill the relevant keys, and follow the
 reviewed Supabase CLI workflow in [`supabase/README.md`](supabase/README.md).
 The files in `db/migrations` are historical only and must not be rerun.
+
+For payment configuration, test-mode validation, webhook setup, environment
+separation, and live release controls, follow the tracked
+[`Paystack setup and release guide`](../docs/paystack-setup.md).

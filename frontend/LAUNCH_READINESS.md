@@ -45,20 +45,35 @@ DATABASE_URL=
 ## 4. Checkout & Paystack Confirmation
 
 - [ ] Create or configure the Paystack account.
-- [ ] Add `PAYSTACK_SECRET_KEY` locally and in production.
-- [ ] Configure the Paystack callback URL.
+- [ ] Complete activation/KYC before Live Mode and confirm the live integration accepts the production secret.
+- [ ] Add the mode-correct server-only `PAYSTACK_SECRET_KEY`; do not add a public Paystack key.
+- [ ] Keep `PAYSTACK_CHECKOUT_ENABLED=false` until the database-first rollout and live gates pass.
+- [ ] Set Paystack's integration payment-session timeout to exactly 1800 seconds, or another nonzero value no greater than the application's 1800-second inventory reservation TTL; never use 0 because it disables the provider timeout.
+- [ ] Confirm `NEXT_PUBLIC_APP_URL` is the exact origin used to construct callback URLs.
 - [ ] Configure the Paystack webhook URL.
 - [ ] Test payment initialization.
+- [ ] Confirm identical canonical cart/customer details reuse the session-scoped idempotency key across refresh and back navigation.
 - [ ] Test successful payment callback verification.
 - [ ] Test failed payment handling.
 - [ ] Test abandoned payment handling.
 - [ ] Test webhook payment-status updates.
-- [ ] Confirm cart clears only after local order submission without Paystack or confirmed paid callback.
+- [ ] Confirm the cart clears only after the internal payment status is `paid`; local order creation, redirect, pending, failed, and review states must keep it.
+- [ ] Deploy and verify WAF rate-limit/bot controls for `POST /api/checkout` and `POST /api/payments/verify`; a repository build cannot prove this external gate.
+- [ ] Complete the phase-by-phase checks in `../docs/paystack-setup.md`.
 
 Production webhook path:
 
 ```txt
 /api/webhooks/paystack
+```
+
+Required variables:
+
+```txt
+NEXT_PUBLIC_APP_URL=
+PAYSTACK_CHECKOUT_ENABLED=false
+PAYSTACK_SECRET_KEY=
+CRON_SECRET=
 ```
 
 ## 5. Email & Support Messaging
@@ -67,7 +82,10 @@ Production webhook path:
 - [ ] Verify sender email or sending domain.
 - [ ] Add Resend environment variables locally and in production.
 - [ ] Test customer order confirmation email.
-- [ ] Test admin order notification email.
+- [ ] Test customer confirmation and review emails as independent outbox rows.
+- [ ] Test admin confirmation and payment-review alerts as independent outbox rows.
+- [ ] Confirm a Resend error or throw retries only the failed row and never marks it sent.
+- [ ] Confirm `ORDER_NOTIFICATION_EMAIL` is resolved at delivery time; no actual admin address is persisted in admin outbox rows.
 - [ ] Confirm order emails mention the 48-hour damaged/incorrect-item reporting window.
 
 Required variables:
@@ -122,11 +140,13 @@ pnpm.cmd build
 ## 9. Production Deployment
 
 - [ ] Deploy to Vercel or another Next.js-compatible serverless host.
+- [ ] Set Vercel Project Root Directory to `frontend`; verify the deployed build output and `/api/cron/payment-maintenance` schedule in the dashboard.
+- [ ] Keep the daily Hobby-compatible cron as a recovery backstop; on paid plans choose and verify a faster retry cadence within plan/function/email limits.
 - [ ] Configure production domain.
 - [ ] Set `NEXT_PUBLIC_APP_URL` to the production domain.
 - [ ] Add all production environment variables.
 - [ ] Confirm secrets are not committed to Git.
-- [ ] Update Paystack callback URL to the live domain.
+- [ ] Confirm initialized transactions contain the exact live-domain callback URL.
 - [ ] Update Paystack webhook URL to the live domain.
 - [ ] Verify Supabase, Paystack, Resend, and Vercel Analytics work from production.
 
@@ -137,8 +157,12 @@ NEXT_PUBLIC_APP_URL=
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 SUPABASE_SECRET_KEY=
+PAYSTACK_CHECKOUT_ENABLED=false
 PAYSTACK_SECRET_KEY=
+CRON_SECRET=
 RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+ORDER_NOTIFICATION_EMAIL=
 ```
 
 ## 10. Final Launch Approval
