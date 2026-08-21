@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fff7ec",
+  themeColor: "#f7c8d3",
 };
 
 export default function RootLayout({
@@ -32,7 +32,7 @@ export default function RootLayout({
           defaultTheme="system"
           disableTransitionOnChange
           enableSystem
-          storageKey="ekana-theme"
+          storageKey="ekana-system-theme"
         >
           {children}
           <Analytics />

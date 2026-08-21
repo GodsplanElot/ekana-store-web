@@ -5,7 +5,6 @@ import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
 
 import { BrandLogo } from "@/components/brand-logo";
-import { ThemeModeControl } from "@/components/theme-mode-control";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart-context";
 import { cn } from "@/lib/utils";
@@ -80,7 +79,6 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <ThemeModeControl />
             <Button variant="ghost" size="icon" aria-label="Search products" asChild>
               <Link href="/shop">
                 <Search className="h-5 w-5" />
