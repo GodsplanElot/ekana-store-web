@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Boxes, ClipboardList, LayoutDashboard, LogOut, Users } from "lucide-react";
+import { Boxes, ClipboardList, Images, LayoutDashboard, LogOut, Users } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { requireStaff, type StaffRole } from "@/lib/server/require-staff";
@@ -22,6 +22,7 @@ const navigation: Array<{
 }> = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Boxes },
+  { href: "/admin/media", label: "Media", icon: Images, roles: ["owner", "admin", "inventory"] },
   { href: "/admin/orders", label: "Orders", icon: ClipboardList, roles: ["owner", "admin", "support"] },
   { href: "/admin/staff", label: "Staff", icon: Users, roles: ["owner"] },
 ];

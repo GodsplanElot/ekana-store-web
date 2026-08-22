@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const remotePatterns: NonNullable<NextConfig["images"]>["remotePatterns"] = [];
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const storagePathname = "/storage/v1/object/public/**";
 
 if (supabaseUrl) {
   try {
@@ -10,12 +11,32 @@ if (supabaseUrl) {
       protocol: storageUrl.protocol === "http:" ? "http" : "https",
       hostname: storageUrl.hostname,
       port: storageUrl.port,
-      pathname: "/storage/v1/object/public/**",
+      pathname: storagePathname,
     });
   } catch {
     // Invalid environment values are reported by the Supabase client at runtime.
   }
 }
+
+remotePatterns.push(
+  {
+    protocol: "http",
+    hostname: "127.0.0.1",
+    port: "54321",
+    pathname: storagePathname,
+  },
+  {
+    protocol: "http",
+    hostname: "localhost",
+    port: "54321",
+    pathname: storagePathname,
+  },
+  {
+    protocol: "https",
+    hostname: "**.supabase.co",
+    pathname: storagePathname,
+  },
+);
 
 const nextConfig: NextConfig = {
   images: {

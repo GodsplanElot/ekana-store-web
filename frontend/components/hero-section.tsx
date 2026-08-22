@@ -1,11 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { HeroCarousel } from "@/components/hero-carousel";
 import { Button } from "@/components/ui/button";
+import type { SiteMediaItem } from "@/lib/site-media";
 
-export function HeroSection() {
+export function HeroSection({ slides = [] }: { slides?: SiteMediaItem[] }) {
   return (
     <section className="relative isolate overflow-hidden border-b border-foreground/10">
       <BrandLogo
@@ -67,23 +68,7 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="relative min-h-[420px] overflow-hidden rounded-md border border-foreground/10 bg-card shadow-[0_30px_90px_rgba(58,35,29,0.14)] lg:min-h-[620px]">
-            <Image
-              src="/images/hero.jpg"
-              alt="Ekana Cosmetics beauty products arranged on pink silk"
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 1024px) 100vw, 54vw"
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(35,22,18,0)_42%,rgba(35,22,18,0.54)_100%)]" />
-            <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4 md:bottom-7 md:left-7 md:right-7">
-              <div />
-              <p className="hidden max-w-[210px] text-right text-xs leading-5 text-white/80 sm:block">
-                A mobile-first beauty counter for shades, restocks, and daily essentials.
-              </p>
-            </div>
-          </div>
+          <HeroCarousel slides={slides} />
         </div>
       </div>
     </section>

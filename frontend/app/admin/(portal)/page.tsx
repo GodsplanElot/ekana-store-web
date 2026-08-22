@@ -1,9 +1,10 @@
 import Link from "next/link"
-import { ArrowUpRight, Boxes, ClipboardList, ShieldCheck } from "lucide-react"
+import { ArrowUpRight, Boxes, ClipboardList, Images, ShieldCheck } from "lucide-react"
 import { requireStaff } from "@/lib/server/require-staff"
 
 const actions = [
   { href: "/admin/products", label: "Manage products", description: "Create listings, update stock and control storefront visibility.", icon: Boxes },
+  { href: "/admin/media", label: "Update media", description: "Upload and arrange homepage intro carousel images.", icon: Images },
   { href: "/admin/orders", label: "Review orders", description: "Track payments and move customer orders through fulfilment.", icon: ClipboardList },
 ]
 
@@ -25,7 +26,7 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
           {actions.map((action, index) => {
             const Icon = action.icon
             return (
