@@ -42,7 +42,8 @@ export function mapSupabaseProduct(row: SupabaseProductRow): Product {
 export async function getCatalogProducts() {
   const supabase = createSupabasePublicClient()
   if (!supabase) {
-    throw new Error("Supabase catalogue service is not configured.")
+    console.error("Supabase catalogue service is not configured.")
+    return []
   }
 
   const { data, error } = await supabase
@@ -52,7 +53,10 @@ export async function getCatalogProducts() {
     .order("created_at", { ascending: false })
 
   if (error) {
-    throw new Error("Supabase catalogue query failed.", { cause: error })
+    console.error("Supabase catalogue query failed", {
+      error: error.message,
+    })
+    return []
   }
 
   return (data ?? []).map((row) =>
